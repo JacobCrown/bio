@@ -1,0 +1,149 @@
+---
+import { Image } from 'astro:assets';
+import type { Employer } from '../../lib/content';
+import { formatDuration, formatRange } from '../../lib/format';
+import DummyBadge from '../shared/DummyBadge.astro';
+import WorkProjectItem from './WorkProjectItem.astro';
+
+interface Props {
+  employer: Employer;
+}
+const { employer } = Astro.props;
+const current = employer.endDate === null;
+---
+
+<article class:list={['employer', { 'employer--current': current }]}>
+  <div class="employer__period mono">
+    <p class="employer__dates">{formatRange(employer.startDate, employer.endDate, { ongoing: true })}</p>
+    <p>{formatDuration(employer.startDate, employer.endDate)}</p>
+    {employer.location && <p>{employer.location}</p>}
+  </div>
+
+  <div class="employer__main">
+    <header class="employer__head">
+      {
+        employer.logo && (
+          <Image class="employer__logo" src={employer.logo} alt="" width={48} height={48} densities={[1, 2]} />
+        )
+      }
+      <div>
+        <h3>
+          {
+            employer.website ? (
+              <a href={employer.website} rel="noopener">
+                {employer.name}
+              </a>
+            ) : (
+              employer.name
+            )
+          }
+          {employer.dummy && <DummyBadge />}
+        </h3>
+        {employer.position && <p class="employer__position">{employer.position}</p>}
+      </div>
+    </header>
+
+    {employer.description && <p class="employer__description">{employer.description}</p>}
+
+    {
+      employer.projects.length > 0 && (
+        <div class="employer__projects" role="group" aria-label={`Projects at ${employer.name}`}>
+          {employer.projects.map((project) => (
+            <WorkProjectItem project={project} />
+          ))}
+        </div>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .employer {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .employer__period {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-3);
+  }
+  .employer__dates {
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+
+  .employer__main {
+    position: relative;
+    padding-left: var(--space-5);
+    padding-bottom: var(--space-8);
+    border-left: 1px solid var(--color-line);
+  }
+  .employer__main::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 0.5em;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-paper);
+    border: 1.5px solid var(--color-ink-soft);
+  }
+  .employer--current .employer__main::before {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .employer__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .employer__head :global(.employer__logo) {
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius);
+  }
+  h3 {
+    font-size: var(--text-xl);
+    letter-spacing: -0.01em;
+  }
+  h3 a {
+    text-decoration: none;
+  }
+  h3 a:hover {
+    text-decoration: underline;
+  }
+  .employer__position {
+    margin-top: var(--space-1);
+    font-style: italic;
+    color: var(--color-ink-soft);
+  }
+  .employer__description {
+    max-width: var(--measure);
+    margin-top: var(--space-4);
+    color: var(--color-ink-soft);
+  }
+  .employer__projects {
+    margin-top: var(--space-5);
+  }
+
+  @media (min-width: 48rem) {
+    .employer {
+      grid-template-columns: 10rem minmax(0, 1fr);
+      gap: var(--space-6);
+    }
+    .employer__period {
+      display: block;
+      padding-top: 0.3em;
+      text-align: right;
+    }
+    .employer__main {
+      padding-left: var(--space-6);
+    }
+  }
+</style>

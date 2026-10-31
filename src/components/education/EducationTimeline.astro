@@ -1,0 +1,36 @@
+---
+import type { Education } from '../../lib/content';
+import SectionHeading from '../shared/SectionHeading.astro';
+import EducationEntry from './EducationEntry.astro';
+
+interface Props {
+  education: Education[];
+}
+const { education } = Astro.props;
+---
+
+{
+  education.length > 0 && (
+    <section aria-labelledby="education" class="section">
+      <SectionHeading id="education" title="Education" />
+      <div class="timeline">
+        {education.map((entry) => (
+          <EducationEntry entry={entry} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .section {
+    margin-bottom: var(--space-8);
+  }
+  .timeline {
+    margin-top: calc(-1 * var(--space-2));
+  }
+  .timeline :global(.education:last-child .education__main) {
+    padding-bottom: 0;
+    border-left-color: transparent;
+  }
+</style>

@@ -1,0 +1,14 @@
+---
+import { formatRange } from '../../lib/format';
+
+interface Props {
+  start?: Date | null;
+  end?: Date | null;
+  /** Show "– present" when there is a start but no end. */
+  ongoing?: boolean;
+}
+const { start, end, ongoing = false } = Astro.props;
+const text = formatRange(start, end, { ongoing });
+---
+
+{text && <span class="date-range">{text}</span>}

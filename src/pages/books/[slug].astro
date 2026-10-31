@@ -1,0 +1,242 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookCover from '../../components/books/BookCover.astro';
+import Rating from '../../components/shared/Rating.astro';
+import Prose from '../../components/shared/Prose.astro';
+import DummyBadge from '../../components/shared/DummyBadge.astro';
+import { getBooks, type Book } from '../../lib/content';
+import { firstParagraph } from '../../lib/markdown';
+import { formatDay, isoDate } from '../../lib/format';
+
+export const getStaticPaths = (async () => {
+  const books = await getBooks();
+  return books.map((book, index) => ({
+    params: { slug: book.id },
+    props: { book, newer: books[index - 1], older: books[index + 1] },
+  }));
+}) satisfies GetStaticPaths;
+
+const { book, newer, older } = Astro.props as { book: Book; newer?: Book; older?: Book };
+
+const hasReview = book.body.trim().length > 0;
+const days =
+  book.startedAt && Math.round((book.finishedAt.getTime() - book.startedAt.getTime()) / 86_400_000) + 1;
+const description = (book.summary ? firstParagraph(book.summary) : `${book.title} by ${book.author}`)
+  .replace(/\s+/g, ' ')
+  .slice(0, 200);
+---
+
+<BaseLayout title={`${book.title} — ${book.author}`} description={description} image={book.cover} type="article">
+  <div class="container">
+    <a href="/books/" class="mono back"><span aria-hidden="true">←</span> Reading journal</a>
+
+    <article class="book">
+      <aside class="book__aside">
+        <BookCover book={book} width={240} eager />
+      </aside>
+
+      <div class="book__main">
+        <header class="book__head">
+          <h1>{book.title} {book.dummy && <DummyBadge />}</h1>
+          <p class="author">{book.author}</p>
+          <Rating value={book.rating} />
+          <dl class="mono facts">
+            {
+              book.startedAt && (
+                <div>
+                  <dt>Started</dt>
+                  <dd><time datetime={isoDate(book.startedAt)}>{formatDay(book.startedAt)}</time></dd>
+                </div>
+              )
+            }
+            <div>
+              <dt>Finished</dt>
+              <dd><time datetime={isoDate(book.finishedAt)}>{formatDay(book.finishedAt)}</time></dd>
+            </div>
+            {
+              days && (
+                <div>
+                  <dt>Took</dt>
+                  <dd>{days} {days === 1 ? 'day' : 'days'}</dd>
+                </div>
+              )
+            }
+          </dl>
+          {
+            book.tags.length > 0 && (
+              <ul class="tags mono" aria-label="Tags">
+                {book.tags.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+            )
+          }
+        </header>
+
+        {
+          book.summary && (
+            <section aria-labelledby="summary">
+              <h2 id="summary">Summary</h2>
+              <Prose markdown={book.summary} />
+            </section>
+          )
+        }
+
+        {
+          hasReview && (
+            <section aria-labelledby="review">
+              <h2 id="review">My review</h2>
+              <Prose markdown={book.body} />
+            </section>
+          )
+        }
+
+        {!book.summary && !hasReview && <p class="empty">No notes on this one yet.</p>}
+      </div>
+    </article>
+
+    {
+      (newer || older) && (
+        <nav class="pager" aria-label="Other books">
+          <div>
+            {older && (
+              <a href={`/books/${older.id}/`} rel="prev">
+                <span class="mono"><span aria-hidden="true">←</span> Read before</span>
+                <span class="pager__title">{older.title}</span>
+              </a>
+            )}
+          </div>
+          <div class="pager__next">
+            {newer && (
+              <a href={`/books/${newer.id}/`} rel="next">
+                <span class="mono">Read after <span aria-hidden="true">→</span></span>
+                <span class="pager__title">{newer.title}</span>
+              </a>
+            )}
+          </div>
+        </nav>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .back {
+    display: inline-block;
+    margin-top: var(--space-4);
+    text-decoration: none;
+  }
+  .back:hover {
+    text-decoration: underline;
+  }
+
+  .book {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+    padding-block: var(--space-6) var(--space-7);
+  }
+  .book__aside {
+    line-height: 0;
+  }
+  .book__main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+    align-content: start;
+  }
+  .book__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+    gap: var(--space-3);
+  }
+  h1 {
+    font-size: var(--text-display);
+    font-weight: 560;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+  }
+  .author {
+    font-size: var(--text-xl);
+    font-style: italic;
+    color: var(--color-ink-soft);
+  }
+  .book__head :global(.rating) {
+    margin-top: var(--space-2);
+    font-size: 1.35rem;
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-6);
+    margin: var(--space-2) 0 0;
+  }
+  .facts div {
+    display: flex;
+    gap: var(--space-2);
+  }
+  .facts dt::after {
+    content: ':';
+  }
+  .facts dd {
+    margin: 0;
+    color: var(--color-ink);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+  }
+  .tags li::before {
+    content: '#';
+    color: var(--color-accent);
+  }
+
+  section h2 {
+    margin-bottom: var(--space-4);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--text-xl);
+  }
+  .empty {
+    color: var(--color-ink-soft);
+    font-style: italic;
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-line);
+  }
+  .pager a {
+    display: grid;
+    gap: var(--space-1);
+    text-decoration: none;
+  }
+  .pager a:hover .pager__title {
+    text-decoration: underline;
+  }
+  .pager__title {
+    font-size: var(--text-lg);
+    line-height: 1.25;
+  }
+  .pager__next {
+    text-align: right;
+  }
+
+  @media (min-width: 48rem) {
+    .book {
+      grid-template-columns: 15rem minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+    .book__aside {
+      position: sticky;
+      top: var(--space-5);
+      align-self: start;
+    }
+  }
+</style>

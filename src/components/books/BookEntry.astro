@@ -1,0 +1,134 @@
+---
+import type { Book } from '../../lib/content';
+import { formatDay, isoDate } from '../../lib/format';
+import { firstParagraph, renderMarkdown } from '../../lib/markdown';
+import Rating from '../shared/Rating.astro';
+import DummyBadge from '../shared/DummyBadge.astro';
+import BookCover from './BookCover.astro';
+
+interface Props {
+  book: Book;
+  /** Compact variant for the home page. */
+  compact?: boolean;
+}
+const { book, compact = false } = Astro.props;
+const url = `/books/${book.id}/`;
+const excerpt = book.summary ? firstParagraph(book.summary) : '';
+const hasReview = book.body.trim().length > 0;
+const hasMoreSummary = !!book.summary && book.summary.trim().length > excerpt.length;
+const moreLabel = hasReview ? 'Read my review' : hasMoreSummary ? 'Read the summary' : '';
+---
+
+<article class:list={['book', { 'book--compact': compact }]}>
+  <a href={url} class="book__cover" tabindex="-1" aria-hidden="true">
+    <BookCover book={book} width={compact ? 72 : 96} alt="" />
+  </a>
+  <div class="book__body">
+    <h3>
+      <a href={url}>{book.title}</a>
+      {book.dummy && <DummyBadge />}
+    </h3>
+    <p class="book__author">{book.author}</p>
+    <p class="book__meta">
+      <Rating value={book.rating} />
+      <span class="mono">Finished <time datetime={isoDate(book.finishedAt)}>{formatDay(book.finishedAt)}</time></span>
+    </p>
+    {
+      !compact && book.tags.length > 0 && (
+        <ul class="book__tags" aria-label="Tags">
+          {book.tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+    {!compact && excerpt && <p class="book__excerpt" set:html={renderMarkdown(excerpt, { inline: true })} />}
+    {
+      !compact && moreLabel && (
+        <a href={url} class="book__more">
+          {moreLabel} <span aria-hidden="true">→</span>
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .book {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-5);
+    align-items: start;
+  }
+  .book__cover {
+    display: block;
+    line-height: 0;
+    text-decoration: none;
+    color: inherit;
+  }
+  .book__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+    gap: var(--space-2);
+  }
+  h3 {
+    font-size: var(--text-xl);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  h3 a {
+    text-decoration: none;
+  }
+  h3 a:hover {
+    text-decoration: underline;
+  }
+  .book__author {
+    font-style: italic;
+    color: var(--color-ink-soft);
+  }
+  .book__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-4);
+    margin-top: var(--space-1);
+  }
+  .book__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-ink-soft);
+  }
+  .book__tags li::before {
+    content: '#';
+    color: var(--color-accent);
+  }
+  .book__excerpt {
+    max-width: var(--measure);
+    margin-top: var(--space-1);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+  }
+  .book__more {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+  }
+
+  .book--compact h3 {
+    font-size: var(--text-lg);
+  }
+
+  @media (min-width: 40rem) {
+    .book:not(.book--compact) {
+      grid-template-columns: 6rem minmax(0, 1fr);
+      gap: var(--space-6);
+    }
+  }
+</style>

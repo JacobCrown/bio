@@ -1,0 +1,13 @@
+# DUMMY DATA — fictional university. Master's degree, all optional fields filled.
+dummy: true
+institution: Sample University of Technology
+logo: ../../assets/logos/sample-tech.png
+website: https://example.com/sample-tech
+location: Sample City, Country
+degree: Master of Science
+field: Computer Science — Machine Learning
+startDate: 2017-10
+endDate: 2019-06
+description: >-
+  Specialisation in computer vision and deep learning. Thesis: *Self-supervised
+  representation learning for industrial inspection* (graded with distinction).

@@ -1,0 +1,89 @@
+---
+import type { Book } from '../../lib/content';
+import BookEntry from './BookEntry.astro';
+
+interface Props {
+  /** Must already be sorted newest first (getBooks() does this). */
+  books: Book[];
+}
+const { books } = Astro.props;
+
+const groups: { year: number; books: Book[] }[] = [];
+for (const book of books) {
+  const year = book.finishedAt.getUTCFullYear();
+  const last = groups.at(-1);
+  if (last?.year === year) last.books.push(book);
+  else groups.push({ year, books: [book] });
+}
+---
+
+<div class="timeline">
+  {
+    groups.map((group) => (
+      <section class="year" aria-labelledby={`year-${group.year}`}>
+        <h2 id={`year-${group.year}`}>
+          {group.year}
+          <span class="mono count">
+            {group.books.length} {group.books.length === 1 ? 'book' : 'books'}
+          </span>
+        </h2>
+        <ol>
+          {group.books.map((book) => (
+            <li>
+              <BookEntry book={book} />
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .timeline {
+    display: grid;
+    gap: var(--space-8);
+  }
+  .year {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+  h2 {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-ink);
+    font-size: var(--text-2xl);
+    letter-spacing: -0.01em;
+  }
+  .count {
+    font-weight: 400;
+  }
+  ol {
+    display: grid;
+  }
+  li {
+    padding-block: var(--space-6);
+    border-top: 1px solid var(--color-line);
+  }
+  li:first-child {
+    padding-top: var(--space-2);
+    border-top: 0;
+  }
+
+  @media (min-width: 56rem) {
+    .year {
+      grid-template-columns: 9rem minmax(0, 1fr);
+      gap: var(--space-6);
+      align-items: start;
+    }
+    h2 {
+      position: sticky;
+      top: var(--space-5);
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+</style>

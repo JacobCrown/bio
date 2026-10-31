@@ -1,0 +1,35 @@
+---
+import type { ExternalLink } from '../../schemas';
+
+interface Props {
+  links: ExternalLink[];
+}
+const { links } = Astro.props;
+---
+
+{
+  links.length > 0 && (
+    <ul class="links">
+      {links.map((link) => (
+        <li>
+          <a href={link.url} rel="noopener">
+            {link.label} <span aria-hidden="true">↗</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-5);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+  a {
+    text-decoration-color: var(--color-accent);
+  }
+</style>

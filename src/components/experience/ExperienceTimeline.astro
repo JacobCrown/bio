@@ -1,0 +1,36 @@
+---
+import type { Employer } from '../../lib/content';
+import SectionHeading from '../shared/SectionHeading.astro';
+import EmployerEntry from './EmployerEntry.astro';
+
+interface Props {
+  employers: Employer[];
+}
+const { employers } = Astro.props;
+---
+
+{
+  employers.length > 0 && (
+    <section aria-labelledby="experience" class="section">
+      <SectionHeading id="experience" title="Experience" />
+      <div class="timeline">
+        {employers.map((employer) => (
+          <EmployerEntry employer={employer} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .section {
+    margin-bottom: var(--space-8);
+  }
+  .timeline {
+    margin-top: calc(-1 * var(--space-2));
+  }
+  .timeline :global(.employer:last-child .employer__main) {
+    padding-bottom: 0;
+    border-left-color: transparent;
+  }
+</style>

@@ -1,0 +1,115 @@
+---
+import { Image } from 'astro:assets';
+import type { Profile } from '../../lib/content';
+import Prose from '../shared/Prose.astro';
+import DummyBadge from '../shared/DummyBadge.astro';
+
+interface Props {
+  profile: Profile;
+}
+const { profile } = Astro.props;
+const fullName = `${profile.firstName} ${profile.lastName}`;
+const links = [
+  { label: 'GitHub', href: profile.links.github, external: true },
+  { label: 'LinkedIn', href: profile.links.linkedin, external: true },
+  { label: 'Email', href: `mailto:${profile.links.email}`, external: false },
+  ...(profile.cv ? [{ label: 'Download CV', href: profile.cv, external: false, download: true }] : []),
+];
+---
+
+<section id="about" class="hero" aria-labelledby="hero-name">
+  <Image
+    class="hero__photo"
+    src={profile.photo}
+    alt={profile.photoAlt ?? `Portrait of ${fullName}`}
+    width={320}
+    height={320}
+    densities={[1, 2]}
+    loading="eager"
+    fetchpriority="high"
+  />
+  <div class="hero__text">
+    <p class="mono hero__location">
+      {profile.location.city}, {profile.location.country}
+      {profile.dummy && <DummyBadge />}
+    </p>
+    <h1 id="hero-name">{fullName}</h1>
+    <p class="hero__title">{profile.title}</p>
+    <Prose class="hero__bio" markdown={profile.bio} />
+    <ul class="hero__links">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href} rel={link.external ? 'noopener' : undefined} download={link.download ? '' : undefined}>
+              {link.label}
+              {link.external && <span aria-hidden="true"> ↗</span>}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+    padding-block: var(--space-6) var(--space-8);
+  }
+  .hero :global(.hero__photo) {
+    width: 6.5rem;
+    height: 6.5rem;
+    object-fit: cover;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+  .hero__location {
+    margin-bottom: var(--space-4);
+  }
+  h1 {
+    font-size: var(--text-display);
+    font-weight: 560;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+  }
+  .hero__title {
+    margin-top: var(--space-3);
+    font-size: var(--text-xl);
+    font-style: italic;
+    color: var(--color-ink-soft);
+  }
+  .hero :global(.hero__bio) {
+    margin-top: var(--space-6);
+    font-size: var(--text-lg);
+    line-height: 1.55;
+  }
+  .hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin-top: var(--space-6);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+  .hero__links a {
+    text-decoration-color: var(--color-accent);
+  }
+
+  @media (min-width: 48rem) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr) 14rem;
+      gap: var(--space-8);
+      align-items: start;
+      padding-block: var(--space-7) var(--space-9);
+    }
+    .hero :global(.hero__photo) {
+      order: 2;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1;
+      margin-top: var(--space-6);
+    }
+  }
+</style>

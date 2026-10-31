@@ -1,0 +1,130 @@
+---
+import { Image } from 'astro:assets';
+import type { Education } from '../../lib/content';
+import { formatRange } from '../../lib/format';
+import DummyBadge from '../shared/DummyBadge.astro';
+import Prose from '../shared/Prose.astro';
+
+interface Props {
+  entry: Education;
+}
+const { entry } = Astro.props;
+---
+
+<article class:list={['education', { 'education--current': entry.endDate === null }]}>
+  <div class="education__period mono">
+    <p class="education__dates">{formatRange(entry.startDate, entry.endDate, { ongoing: true })}</p>
+    {entry.location && <p>{entry.location}</p>}
+  </div>
+
+  <div class="education__main">
+    <header class="education__head">
+      {
+        entry.logo && (
+          <Image class="education__logo" src={entry.logo} alt="" width={48} height={48} densities={[1, 2]} />
+        )
+      }
+      <div>
+        <h3>
+          {
+            entry.website ? (
+              <a href={entry.website} rel="noopener">
+                {entry.institution}
+              </a>
+            ) : (
+              entry.institution
+            )
+          }
+          {entry.dummy && <DummyBadge />}
+        </h3>
+        <p class="education__degree">
+          {entry.degree}{entry.field && <>, {entry.field}</>}
+        </p>
+      </div>
+    </header>
+    {entry.description && <Prose class="education__description" markdown={entry.description} />}
+  </div>
+</article>
+
+<style>
+  .education {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+  .education__period {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-3);
+  }
+  .education__dates {
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+  .education__main {
+    position: relative;
+    padding-left: var(--space-5);
+    padding-bottom: var(--space-7);
+    border-left: 1px solid var(--color-line);
+  }
+  .education__main::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 0.5em;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-paper);
+    border: 1.5px solid var(--color-ink-soft);
+  }
+  .education--current .education__main::before {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .education__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .education__head :global(.education__logo) {
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius);
+  }
+  h3 {
+    font-size: var(--text-xl);
+    letter-spacing: -0.01em;
+  }
+  h3 a {
+    text-decoration: none;
+  }
+  h3 a:hover {
+    text-decoration: underline;
+  }
+  .education__degree {
+    margin-top: var(--space-1);
+    font-style: italic;
+    color: var(--color-ink-soft);
+  }
+  .education__main :global(.education__description) {
+    margin-top: var(--space-4);
+    color: var(--color-ink-soft);
+  }
+
+  @media (min-width: 48rem) {
+    .education {
+      grid-template-columns: 10rem minmax(0, 1fr);
+      gap: var(--space-6);
+    }
+    .education__period {
+      display: block;
+      padding-top: 0.3em;
+      text-align: right;
+    }
+    .education__main {
+      padding-left: var(--space-6);
+    }
+  }
+</style>

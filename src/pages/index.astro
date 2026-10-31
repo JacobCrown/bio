@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProfileHero from '../components/profile/ProfileHero.astro';
+import EducationTimeline from '../components/education/EducationTimeline.astro';
+import ExperienceTimeline from '../components/experience/ExperienceTimeline.astro';
+import ProjectGrid from '../components/projects/ProjectGrid.astro';
+import BookEntry from '../components/books/BookEntry.astro';
+import SectionHeading from '../components/shared/SectionHeading.astro';
+import { getBooks, getEducation, getEmployers, getPersonalProjects, getProfile } from '../lib/content';
+
+const [profile, education, employers, projects, books] = await Promise.all([
+  getProfile(),
+  getEducation(),
+  getEmployers(),
+  getPersonalProjects(),
+  getBooks(),
+]);
+const featured = projects.filter((project) => project.featured);
+const latestBooks = books.slice(0, 3);
+
+const fullName = `${profile.firstName} ${profile.lastName}`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: fullName,
+  jobTitle: profile.title,
+  address: { '@type': 'PostalAddress', addressLocality: profile.location.city, addressCountry: profile.location.country },
+  sameAs: [profile.links.github, profile.links.linkedin],
+  email: `mailto:${profile.links.email}`,
+};
+---
+
+<BaseLayout jsonLd={jsonLd}>
+  <div class="container">
+    <ProfileHero profile={profile} />
+
+    <EducationTimeline education={education} />
+
+    <ExperienceTimeline employers={employers} />
+
+    {
+      featured.length > 0 && (
+        <section aria-labelledby="projects" class="section">
+          <SectionHeading id="projects" title="Projects" href="/projects/" linkLabel="All projects" />
+          <ProjectGrid projects={featured} />
+        </section>
+      )
+    }
+
+    {
+      latestBooks.length > 0 && (
+        <section aria-labelledby="reading" class="section">
+          <SectionHeading id="reading" title="Recently read" href="/books/" linkLabel="Reading journal" />
+          <ul class="latest">
+            {latestBooks.map((book) => (
+              <li>
+                <BookEntry book={book} compact />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .section {
+    margin-bottom: var(--space-8);
+  }
+  .latest {
+    display: grid;
+    gap: var(--space-6);
+  }
+  @media (min-width: 56rem) {
+    .latest {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-6);
+    }
+  }
+</style>

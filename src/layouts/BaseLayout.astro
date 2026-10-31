@@ -1,0 +1,157 @@
+---
+import '@fontsource-variable/newsreader/wght.css';
+import '@fontsource-variable/newsreader/wght-italic.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+import '../styles/global.css';
+import serifFont from '@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url';
+import monoFont from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
+import { getImage } from 'astro:assets';
+import { getProfile } from '../lib/content';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Social-share image (optimised and made absolute automatically). */
+  image?: ImageMetadata;
+  type?: 'website' | 'article';
+  /** Structured data (JSON-LD) to embed. */
+  jsonLd?: Record<string, unknown>;
+}
+
+const profile = await getProfile();
+const { title, description, image, type = 'website', jsonLd } = Astro.props;
+
+const fullName = `${profile.firstName} ${profile.lastName}`;
+const pageTitle = title ? `${title} — ${fullName}` : `${fullName} — ${profile.title}`;
+const pageDescription =
+  description ?? `${fullName}, ${profile.title.toLowerCase()} based in ${profile.location.city}, ${profile.location.country}.`;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+const shareImage = await getImage({ src: image ?? profile.photo, width: 1200, format: 'jpg' });
+const shareImageUrl = Astro.site ? new URL(shareImage.src, Astro.site).href : shareImage.src;
+
+const nav = [
+  { label: 'Home', href: '/' },
+  { label: 'Education', href: '/#education' },
+  { label: 'Experience', href: '/#experience' },
+  { label: 'Projects', href: '/projects/' },
+  { label: 'Reading', href: '/books/' },
+];
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => (href === '/' ? path === '/' : !href.includes('#') && path.startsWith(href));
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    {canonical && <link rel="canonical" href={canonical.href} />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href={serifFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={monoFont} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:image" content={shareImageUrl} />
+    {canonical && <meta property="og:url" content={canonical.href} />}
+    <meta name="twitter:card" content="summary" />
+    <meta name="generator" content={Astro.generator} />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    {
+      profile.dummy && (
+        <p class="dummy-banner">Sample content — this site is currently showing placeholder data.</p>
+      )
+    }
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <nav aria-label="Main">
+          <ul>
+            {
+              nav.map((item) => (
+                <li>
+                  <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <p class="mono">© {new Date().getFullYear()} {fullName}</p>
+        <ul class="mono">
+          <li><a href={profile.links.github} rel="noopener">GitHub</a></li>
+          <li><a href={profile.links.linkedin} rel="noopener">LinkedIn</a></li>
+          <li><a href={`mailto:${profile.links.email}`}>Email</a></li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .dummy-banner {
+    padding: var(--space-2) var(--gutter);
+    background: var(--color-surface);
+    border-bottom: 1px dashed var(--color-accent);
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-align: center;
+  }
+
+  .site-header {
+    padding-block: var(--space-5);
+  }
+  .site-header__inner {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-5);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+  nav a {
+    text-decoration: none;
+    padding-block: var(--space-1);
+    border-bottom: 1px solid transparent;
+  }
+  nav a:hover,
+  nav a[aria-current='page'] {
+    border-bottom-color: var(--color-accent);
+  }
+
+  .site-footer {
+    margin-top: var(--space-9);
+    padding-block: var(--space-6);
+    border-top: 1px solid var(--color-line);
+  }
+  .site-footer__inner,
+  .site-footer ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+  }
+  .site-footer__inner {
+    justify-content: space-between;
+  }
+</style>

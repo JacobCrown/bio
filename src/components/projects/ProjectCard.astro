@@ -1,0 +1,116 @@
+---
+import { Image } from 'astro:assets';
+import type { PersonalProject } from '../../lib/content';
+import { formatRange } from '../../lib/format';
+import TechTags from '../shared/TechTags.astro';
+import DummyBadge from '../shared/DummyBadge.astro';
+import ProjectStatus from './ProjectStatus.astro';
+
+interface Props {
+  project: PersonalProject;
+}
+const { project } = Astro.props;
+const hasDetail = project.body.trim().length > 0;
+const detailUrl = `/projects/${project.id}/`;
+const dates = formatRange(project.startDate, project.endDate, { ongoing: project.status === 'ongoing' });
+---
+
+<article class="card">
+  {
+    project.image && (
+      <Image
+        class="card__image"
+        src={project.image}
+        alt={project.imageAlt ?? `Screenshot of ${project.name}`}
+        width={640}
+        widths={[400, 640, 960]}
+        sizes="(min-width: 48rem) 30rem, 100vw"
+      />
+    )
+  }
+  <header class="card__head">
+    <h3>
+      {hasDetail ? <a href={detailUrl}>{project.name}</a> : project.name}
+      {project.dummy && <DummyBadge />}
+    </h3>
+    <p class="card__meta">
+      <ProjectStatus status={project.status} />
+      {dates && <span class="mono">{dates}</span>}
+    </p>
+  </header>
+  <p class="card__summary">{project.summary}</p>
+  <TechTags items={project.stack} />
+  <ul class="card__links">
+    {
+      hasDetail && (
+        <li>
+          <a href={detailUrl}>Details →</a>
+        </li>
+      )
+    }
+    <li>
+      <a href={project.repo} rel="noopener">GitHub ↗</a>
+    </li>
+    {
+      project.demo && (
+        <li>
+          <a href={project.demo} rel="noopener">Live demo ↗</a>
+        </li>
+      )
+    }
+  </ul>
+</article>
+
+<style>
+  .card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    justify-items: start;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-line);
+  }
+  .card :global(.card__image) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    margin-bottom: var(--space-2);
+  }
+  .card__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1);
+  }
+  h3 {
+    font-size: var(--text-xl);
+    letter-spacing: -0.01em;
+  }
+  h3 a {
+    text-decoration: none;
+  }
+  h3 a:hover {
+    text-decoration: underline;
+  }
+  .card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+  }
+  .card__summary {
+    color: var(--color-ink-soft);
+  }
+  .card__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-5);
+    margin-top: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+  .card__links a {
+    text-decoration-color: var(--color-accent);
+  }
+</style>

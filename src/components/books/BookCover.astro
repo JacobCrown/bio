@@ -1,0 +1,71 @@
+---
+import { Image } from 'astro:assets';
+import type { Book } from '../../lib/content';
+
+interface Props {
+  book: Pick<Book, 'title' | 'author' | 'cover'>;
+  /** Rendered width in px (the image is optimised for this width and 2x). */
+  width: number;
+  /** Use "" when the cover is purely decorative (a title is next to it). */
+  alt?: string;
+  eager?: boolean;
+}
+const { book, width, alt = `Cover of ${book.title}`, eager = false } = Astro.props;
+const height = Math.round(width * 1.5);
+---
+
+{
+  book.cover ? (
+    <Image
+      class="cover"
+      src={book.cover}
+      alt={alt}
+      width={width}
+      height={height}
+      densities={[1, 2]}
+      loading={eager ? 'eager' : 'lazy'}
+    />
+  ) : (
+    <div class="cover cover--fallback" style={`width: ${width}px; height: ${height}px`} aria-hidden="true">
+      <span class="fallback-title">{book.title}</span>
+      <span class="fallback-author">{book.author}</span>
+    </div>
+  )
+}
+
+<style>
+  .cover {
+    display: block;
+    max-width: 100%;
+    object-fit: cover;
+    border-radius: 2px 4px 4px 2px;
+    background: var(--color-surface);
+    box-shadow:
+      inset 3px 0 0 oklch(0% 0 0 / 0.12),
+      0 1px 2px oklch(0% 0 0 / 0.18);
+  }
+  .cover--fallback {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12% 10%;
+    border: 1px solid var(--color-line);
+    box-shadow: none;
+    overflow: hidden;
+  }
+  .fallback-title {
+    font-weight: 600;
+    font-size: 0.75rem;
+    font-size: 12.5cqw;
+    line-height: 1.15;
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
+  .fallback-author {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-size: max(0.6rem, 7cqw);
+    color: var(--color-ink-soft);
+  }
+</style>

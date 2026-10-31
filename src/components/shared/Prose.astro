@@ -1,0 +1,14 @@
+---
+import { renderMarkdown } from '../../lib/markdown';
+
+interface Props {
+  markdown: string;
+  /** Shift heading levels (e.g. 3 turns `##` into `<h5>`). */
+  headingOffset?: number;
+  class?: string;
+}
+
+const { markdown, headingOffset = 0, class: className } = Astro.props;
+---
+
+<div class:list={['prose', className]} set:html={renderMarkdown(markdown, { headingOffset })} />
