@@ -7,6 +7,8 @@ import serifFont from '@fontsource-variable/newsreader/files/newsreader-latin-wg
 import monoFont from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
 import { getImage } from 'astro:assets';
 import { getProfile } from '../lib/content';
+import { locales, localeOf, localePath, ogLocales, defaultLocale } from '../i18n';
+import { ui } from '../i18n/ui';
 
 interface Props {
   title?: string;
@@ -18,41 +20,61 @@ interface Props {
   jsonLd?: Record<string, unknown>;
 }
 
-const profile = await getProfile();
+const lang = localeOf(Astro);
+const t = ui[lang];
+const profile = await getProfile(lang);
 const { title, description, image, type = 'website', jsonLd } = Astro.props;
 
 const fullName = `${profile.firstName} ${profile.lastName}`;
 const pageTitle = title ? `${title} — ${fullName}` : `${fullName} — ${profile.title}`;
 const pageDescription =
-  description ?? `${fullName}, ${profile.title.toLowerCase()} based in ${profile.location.city}, ${profile.location.country}.`;
+  description ?? t.defaultDescription(fullName, profile.title, profile.location.city, profile.location.country);
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 const shareImage = await getImage({ src: image ?? profile.photo, width: 1200, format: 'jpg' });
 const shareImageUrl = Astro.site ? new URL(shareImage.src, Astro.site).href : shareImage.src;
 
 const nav = [
-  { label: 'Home', href: '/' },
-  { label: 'Education', href: '/#education' },
-  { label: 'Experience', href: '/#experience' },
-  { label: 'Projects', href: '/projects/' },
-  { label: 'Reading', href: '/books/' },
+  { label: t.nav.home, href: '/' },
+  { label: t.nav.education, href: '/#education' },
+  { label: t.nav.experience, href: '/#experience' },
+  { label: t.nav.projects, href: '/projects/' },
+  { label: t.nav.reading, href: '/books/' },
 ];
-const path = Astro.url.pathname;
+// Path without the language prefix ("/pl/books/x/" -> "/books/x/"), used to match the nav
+// and to build the same page in the other language. Pages outside /pl/ and /en/ (404) keep their path.
+const localePrefix = new RegExp(`^/(${locales.join('|')})(?=/|$)`);
+const isLocalized = localePrefix.test(Astro.url.pathname);
+const path = Astro.url.pathname.replace(localePrefix, '') || '/';
 const isCurrent = (href: string) => (href === '/' ? path === '/' : !href.includes('#') && path.startsWith(href));
+
+const alternates =
+  Astro.site && isLocalized
+    ? [
+        ...locales.map((locale) => ({ hreflang: locale, href: new URL(localePath(locale, path), Astro.site).href })),
+        { hreflang: 'x-default', href: new URL(localePath(defaultLocale, path), Astro.site).href },
+      ]
+    : [];
+const languageSwitch = locales.map((locale) => ({
+  locale,
+  href: localePath(locale, isLocalized ? path : '/'),
+}));
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
     {canonical && <link rel="canonical" href={canonical.href} />}
+    {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />)}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preload" href={serifFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={monoFont} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content={type} />
+    <meta property="og:locale" content={ogLocales[lang]} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:image" content={shareImageUrl} />
@@ -62,11 +84,11 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : !href.include
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
   <body>
-    <a href="#main" class="skip-link">Skip to content</a>
+    <a href="#main" class="skip-link">{t.skipToContent}</a>
 
     {
       profile.dummy && (
-        <p class="dummy-banner">Sample content — this site is currently showing placeholder data.</p>
+        <p class="dummy-banner">{t.sampleBanner}</p>
       )
     }
 
@@ -77,8 +99,26 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : !href.include
             {
               nav.map((item) => (
                 <li>
-                  <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                  <a href={localePath(lang, item.href)} aria-current={isCurrent(item.href) ? 'page' : undefined}>
                     {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+        <nav class="lang-switch" aria-label={t.languageSwitch}>
+          <ul>
+            {
+              languageSwitch.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    hreflang={item.locale}
+                    lang={item.locale}
+                    aria-current={item.locale === lang ? 'true' : undefined}
+                  >
+                    {item.locale.toUpperCase()}
                   </a>
                 </li>
               ))
@@ -96,9 +136,9 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : !href.include
       <div class="container site-footer__inner">
         <p class="mono">© {new Date().getFullYear()} {fullName}</p>
         <ul class="mono">
-          <li><a href={profile.links.github} rel="noopener">GitHub</a></li>
-          <li><a href={profile.links.linkedin} rel="noopener">LinkedIn</a></li>
-          <li><a href={`mailto:${profile.links.email}`}>Email</a></li>
+          <li><a href={profile.links.github} rel="noopener">{t.contact.github}</a></li>
+          <li><a href={profile.links.linkedin} rel="noopener">{t.contact.linkedin}</a></li>
+          <li><a href={`mailto:${profile.links.email}`}>{t.contact.email}</a></li>
         </ul>
       </div>
     </footer>
@@ -137,6 +177,15 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : !href.include
   }
   nav a:hover,
   nav a[aria-current='page'] {
+    border-bottom-color: var(--color-accent);
+  }
+  .lang-switch {
+    margin-left: auto;
+  }
+  .lang-switch ul {
+    gap: var(--space-1) var(--space-3);
+  }
+  .lang-switch a[aria-current='true'] {
     border-bottom-color: var(--color-accent);
   }
 

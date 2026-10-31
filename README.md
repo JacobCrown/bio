@@ -28,12 +28,12 @@ If a content file is invalid (bad date, rating out of range, missing field…), 
 ```
 src/
 ├── content/                  ← ALL YOUR CONTENT LIVES HERE
-│   ├── profile/profile.yaml          one file: name, bio, links…
-│   ├── education/<slug>.yaml         one file per degree
-│   ├── employers/<slug>.yaml         one file per employer
-│   ├── work-projects/<employer>/<slug>.md   one file per project done for an employer
-│   ├── projects/<slug>.md            one file per personal / GitHub project
-│   └── books/<slug>.md               one file per book
+│   ├── profile/profile.{pl,en}.yaml              name, bio, links… (one per language)
+│   ├── education/<slug>.{pl,en}.yaml             one degree per language
+│   ├── employers/<slug>.{pl,en}.yaml             one employer per language
+│   ├── work-projects/<employer>/<slug>.{pl,en}.md   one project per language
+│   ├── projects/<slug>.{pl,en}.md                one personal / GitHub project per language
+│   └── books/<slug>.{pl,en}.md                   one book per language
 ├── assets/                   ← images referenced by content
 │   ├── profile/   books/   projects/   logos/
 ├── schemas.ts                ← the data model (Zod): every field, its type, what is optional
@@ -44,8 +44,10 @@ src/
 │   └── markdown.ts           ← Markdown → HTML
 ├── components/               ← presentation only; receive typed props
 │   ├── profile/  experience/  projects/  books/  shared/
-├── layouts/BaseLayout.astro  ← <head>/SEO, header, footer
-├── pages/                    ← routes (home, /projects, /projects/<slug>, /books, /books/<slug>)
+├── i18n/                     ← language helpers (index.ts) and interface strings (ui.ts)
+├── layouts/BaseLayout.astro  ← <head>/SEO, language switcher, header, footer
+├── pages/[lang]/             ← routes per language: home, /projects, /projects/<slug>, /books, /books/<slug>
+├── pages/404.astro           ← shared 404 page (default language)
 └── styles/                   ← tokens.css (colours, fonts, spacing), base.css, prose.css
 ```
 
@@ -64,9 +66,25 @@ Free-text fields (`bio`, `summary`, and Markdown bodies) accept Markdown: `**bol
 
 ---
 
+## Languages
+
+The site is available in **Polish** (default, under `/pl/`) and **English** (under `/en/`). Every content entry exists in both languages as two files with the same name and a language suffix:
+
+```
+src/content/books/small-systems.pl.md   ← Polish version
+src/content/books/small-systems.en.md   ← English version
+```
+
+- **Both files are required.** If an entry has only one language, `dev` and `build` stop and name the missing file.
+- The URL slug is the file name without the suffix, so `/pl/books/small-systems/` and `/en/books/small-systems/` show the same entry and the language switcher always opens the matching page.
+- Keep the non-text fields (dates, ratings, links, images, `stack`, `status`, `employer`) identical in both files. The `dummy` flag goes in both files too.
+- Interface strings (headings, "Read more", date wording, plural forms) live in [`src/i18n/ui.ts`](src/i18n/ui.ts). Add a key to both languages there; TypeScript reports a missing one.
+
+---
+
 ## Profile
 
-`src/content/profile/profile.yaml`
+`src/content/profile/profile.pl.yaml` and `profile.en.yaml`
 
 | Field | Required | Notes |
 |---|---|---|
@@ -87,7 +105,7 @@ The site name, page titles, SEO description and footer all come from this file.
 
 ## Add a degree
 
-Create `src/content/education/<slug>.yaml` — one file per degree (bachelor, master…). Shown above Experience, newest first.
+Create `src/content/education/<slug>.pl.yaml` and `<slug>.en.yaml` — one pair per degree (bachelor, master…). Shown above Experience, newest first.
 
 ```yaml
 # src/content/education/sample-tech-university.yaml
@@ -107,7 +125,7 @@ Required: `institution`, `degree`, `startDate`.
 
 ## Add an employer
 
-Create `src/content/employers/<slug>.yaml`. The file name (without `.yaml`) is the employer's **slug**; projects refer to it.
+Create `src/content/employers/<slug>.pl.yaml` and `<slug>.en.yaml`. The file name without the language suffix is the employer's **slug**; projects refer to it.
 
 ```yaml
 # src/content/employers/acme-corp.yaml
@@ -126,7 +144,7 @@ Only `name` and `startDate` are required. Employers are sorted automatically, ne
 
 ## Add a project to an employer
 
-Create `src/content/work-projects/<employer-slug>/<project-slug>.md` (the folder is only for tidiness; what links the project to the employer is the `employer:` field).
+Create `src/content/work-projects/<employer-slug>/<project-slug>.pl.md` and `<project-slug>.en.md` (the folder is only for tidiness; what links the project to the employer is the `employer:` field, which holds the slug without a language suffix).
 
 ```markdown
 ---
@@ -160,7 +178,7 @@ Projects are sorted newest first by `startDate`; projects without dates go last.
 
 ## Add a personal project
 
-Create `src/content/projects/<slug>.md`. The slug becomes the URL: `/projects/<slug>/`.
+Create `src/content/projects/<slug>.pl.md` and `<slug>.en.md`. The slug becomes the URL: `/pl/projects/<slug>/` and `/en/projects/<slug>/`.
 
 ```markdown
 ---
@@ -183,7 +201,7 @@ Optional detailed description in Markdown. If this is empty, the card has no
 
 ## Add a book
 
-Create `src/content/books/<slug>.md`. The slug becomes the URL: `/books/<slug>/`.
+Create `src/content/books/<slug>.pl.md` and `<slug>.en.md`. The slug becomes the URL: `/pl/books/<slug>/` and `/en/books/<slug>/`.
 
 ```markdown
 ---
@@ -214,7 +232,7 @@ All images live in `src/assets/` and are referenced by a **relative path from th
 
 | Image | Put it in | Reference from | Example value |
 |---|---|---|---|
-| Profile photo | `src/assets/profile/` | `src/content/profile/profile.yaml` | `../../assets/profile/me.jpg` |
+| Profile photo | `src/assets/profile/` | `src/content/profile/profile.{pl,en}.yaml` | `../../assets/profile/me.jpg` |
 | Employer / university logo | `src/assets/logos/` | `src/content/employers/*.yaml`, `src/content/education/*.yaml` | `../../assets/logos/acme.png` |
 | Book cover | `src/assets/books/` | `src/content/books/*.md` | `../../assets/books/title.jpg` |
 | Project screenshot | `src/assets/projects/` | `src/content/projects/*.md` | `../../assets/projects/name.jpg` |

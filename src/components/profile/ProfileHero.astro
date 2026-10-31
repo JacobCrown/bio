@@ -3,17 +3,20 @@ import { Image } from 'astro:assets';
 import type { Profile } from '../../lib/content';
 import Prose from '../shared/Prose.astro';
 import DummyBadge from '../shared/DummyBadge.astro';
+import { localeOf } from '../../i18n';
+import { ui } from '../../i18n/ui';
 
 interface Props {
   profile: Profile;
 }
 const { profile } = Astro.props;
+const t = ui[localeOf(Astro)];
 const fullName = `${profile.firstName} ${profile.lastName}`;
 const links = [
-  { label: 'GitHub', href: profile.links.github, external: true },
-  { label: 'LinkedIn', href: profile.links.linkedin, external: true },
-  { label: 'Email', href: `mailto:${profile.links.email}`, external: false },
-  ...(profile.cv ? [{ label: 'Download CV', href: profile.cv, external: false, download: true }] : []),
+  { label: t.contact.github, href: profile.links.github, external: true },
+  { label: t.contact.linkedin, href: profile.links.linkedin, external: true },
+  { label: t.contact.email, href: `mailto:${profile.links.email}`, external: false },
+  ...(profile.cv ? [{ label: t.downloadCv, href: profile.cv, external: false, download: true }] : []),
 ];
 ---
 
@@ -21,7 +24,7 @@ const links = [
   <Image
     class="hero__photo"
     src={profile.photo}
-    alt={profile.photoAlt ?? `Portrait of ${fullName}`}
+    alt={profile.photoAlt ?? t.portraitOf(fullName)}
     width={320}
     height={320}
     densities={[1, 2]}

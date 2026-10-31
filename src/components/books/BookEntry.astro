@@ -2,6 +2,8 @@
 import type { Book } from '../../lib/content';
 import { formatDay, isoDate } from '../../lib/format';
 import { firstParagraph, renderMarkdown } from '../../lib/markdown';
+import { localeOf, localePath } from '../../i18n';
+import { ui } from '../../i18n/ui';
 import Rating from '../shared/Rating.astro';
 import DummyBadge from '../shared/DummyBadge.astro';
 import BookCover from './BookCover.astro';
@@ -12,11 +14,13 @@ interface Props {
   compact?: boolean;
 }
 const { book, compact = false } = Astro.props;
-const url = `/books/${book.id}/`;
+const lang = localeOf(Astro);
+const t = ui[lang];
+const url = localePath(lang, `/books/${book.id}/`);
 const excerpt = book.summary ? firstParagraph(book.summary) : '';
 const hasReview = book.body.trim().length > 0;
 const hasMoreSummary = !!book.summary && book.summary.trim().length > excerpt.length;
-const moreLabel = hasReview ? 'Read my review' : hasMoreSummary ? 'Read the summary' : '';
+const moreLabel = hasReview ? t.readMyReview : hasMoreSummary ? t.readSummary : '';
 ---
 
 <article class:list={['book', { 'book--compact': compact }]}>
@@ -31,11 +35,11 @@ const moreLabel = hasReview ? 'Read my review' : hasMoreSummary ? 'Read the summ
     <p class="book__author">{book.author}</p>
     <p class="book__meta">
       <Rating value={book.rating} />
-      <span class="mono">Finished <time datetime={isoDate(book.finishedAt)}>{formatDay(book.finishedAt)}</time></span>
+      <span class="mono">{t.finished} <time datetime={isoDate(book.finishedAt)}>{formatDay(book.finishedAt, lang)}</time></span>
     </p>
     {
       !compact && book.tags.length > 0 && (
-        <ul class="book__tags" aria-label="Tags">
+        <ul class="book__tags" aria-label={t.tags}>
           {book.tags.map((tag) => (
             <li>{tag}</li>
           ))}

@@ -1,8 +1,12 @@
 ---
 // Rendered only for entries flagged `dummy: true`. Disappears when you remove the flag.
+import { localeOf } from '../../i18n';
+import { ui } from '../../i18n/ui';
+
+const t = ui[localeOf(Astro)];
 ---
 
-<span class="dummy-badge" title="Sample content — replace or delete this entry">Sample</span>
+<span class="dummy-badge" title={t.sampleTitle}>{t.sample}</span>
 
 <style>
   .dummy-badge {

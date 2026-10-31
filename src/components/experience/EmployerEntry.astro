@@ -2,6 +2,8 @@
 import { Image } from 'astro:assets';
 import type { Employer } from '../../lib/content';
 import { formatDuration, formatRange } from '../../lib/format';
+import { localeOf } from '../../i18n';
+import { ui } from '../../i18n/ui';
 import DummyBadge from '../shared/DummyBadge.astro';
 import WorkProjectItem from './WorkProjectItem.astro';
 
@@ -9,13 +11,15 @@ interface Props {
   employer: Employer;
 }
 const { employer } = Astro.props;
+const lang = localeOf(Astro);
+const t = ui[lang];
 const current = employer.endDate === null;
 ---
 
 <article class:list={['employer', { 'employer--current': current }]}>
   <div class="employer__period mono">
-    <p class="employer__dates">{formatRange(employer.startDate, employer.endDate, { ongoing: true })}</p>
-    <p>{formatDuration(employer.startDate, employer.endDate)}</p>
+    <p class="employer__dates">{formatRange(employer.startDate, employer.endDate, lang, { ongoing: true })}</p>
+    <p>{formatDuration(employer.startDate, employer.endDate, lang)}</p>
     {employer.location && <p>{employer.location}</p>}
   </div>
 
@@ -47,7 +51,7 @@ const current = employer.endDate === null;
 
     {
       employer.projects.length > 0 && (
-        <div class="employer__projects" role="group" aria-label={`Projects at ${employer.name}`}>
+        <div class="employer__projects" role="group" aria-label={t.projectsAt(employer.name)}>
           {employer.projects.map((project) => (
             <WorkProjectItem project={project} />
           ))}

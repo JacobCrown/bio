@@ -1,10 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/shared/PageHeader.astro';
+import { localeOf, localePath } from '../i18n';
+import { ui } from '../i18n/ui';
+
+const lang = localeOf(Astro);
+const t = ui[lang];
 ---
 
-<BaseLayout title="Page not found">
+<BaseLayout title={t.notFound.title}>
   <div class="container">
-    <PageHeader title="Page not found" intro="That page doesn't exist — it may have moved." backHref="/" backLabel="Home" />
+    <PageHeader title={t.notFound.title} intro={t.notFound.intro} backHref={localePath(lang, '/')} backLabel={t.nav.home} />
   </div>
 </BaseLayout>

@@ -1,0 +1,92 @@
+---
+import { Image } from 'astro:assets';
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHeader from '../../../components/shared/PageHeader.astro';
+import Prose from '../../../components/shared/Prose.astro';
+import TechTags from '../../../components/shared/TechTags.astro';
+import ExternalLinks from '../../../components/shared/ExternalLinks.astro';
+import DummyBadge from '../../../components/shared/DummyBadge.astro';
+import DateRange from '../../../components/shared/DateRange.astro';
+import ProjectStatus from '../../../components/projects/ProjectStatus.astro';
+import { getPersonalProjects, type PersonalProject } from '../../../lib/content';
+import { locales, localeOf, localePath } from '../../../i18n';
+import { ui } from '../../../i18n/ui';
+
+export const getStaticPaths = (async () => {
+  const pages = await Promise.all(
+    locales.map(async (lang) => {
+      const projects = await getPersonalProjects(lang);
+      return projects
+        .filter((project) => project.body.trim().length > 0)
+        .map((project) => ({ params: { lang, slug: project.id }, props: { project } }));
+    }),
+  );
+  return pages.flat();
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props as { project: PersonalProject };
+const lang = localeOf(Astro);
+const t = ui[lang];
+const links = [
+  { label: t.contact.github, url: project.repo },
+  ...(project.demo ? [{ label: t.liveDemo, url: project.demo }] : []),
+];
+---
+
+<BaseLayout title={project.name} description={project.summary} image={project.image}>
+  <div class="container">
+    <PageHeader title={project.name} intro={project.summary} backHref={localePath(lang, '/projects/')} backLabel={t.allProjects} />
+
+    <div class="meta">
+      <ProjectStatus status={project.status} />
+      <span class="mono"><DateRange start={project.startDate} end={project.endDate} ongoing={project.status === 'ongoing'} /></span>
+      {project.dummy && <DummyBadge />}
+    </div>
+    <ExternalLinks links={links} />
+
+    {
+      project.image && (
+        <Image
+          class="shot"
+          src={project.image}
+          alt={project.imageAlt ?? t.screenshotOf(project.name)}
+          width={1200}
+          widths={[600, 1000, 1400]}
+          sizes="(min-width: 62rem) 62rem, 100vw"
+          loading="eager"
+        />
+      )
+    }
+
+    <div class="body">
+      <Prose markdown={project.body} headingOffset={0} />
+      <TechTags items={project.stack} />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+  .container :global(.shot) {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    margin-block: var(--space-6);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+  .body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+    justify-items: start;
+    margin-top: var(--space-6);
+  }
+</style>

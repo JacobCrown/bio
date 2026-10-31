@@ -5,10 +5,14 @@ interface Props {
   /** Also print "8/10" next to the stars. */
   showValue?: boolean;
 }
+import { localeOf } from '../../i18n';
+import { ui } from '../../i18n/ui';
+
 const { value, max = 10, showValue = true } = Astro.props;
+const t = ui[localeOf(Astro)];
 ---
 
-<span class="rating" role="img" aria-label={`Rated ${value} out of ${max}`} style={`--fill: ${(value / max) * 100}%`}>
+<span class="rating" role="img" aria-label={t.ratedOutOf(value, max)} style={`--fill: ${(value / max) * 100}%`}>
   <span class="stars" aria-hidden="true"></span>
   {
     showValue && (

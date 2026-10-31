@@ -5,5 +5,14 @@ import sitemap from '@astrojs/sitemap';
 // It is used for canonical URLs, Open Graph tags and the sitemap.
 export default defineConfig({
   site: 'https://example.netlify.app',
-  integrations: [sitemap()],
+  i18n: {
+    defaultLocale: 'pl',
+    locales: ['pl', 'en'],
+    routing: { prefixDefaultLocale: true },
+  },
+  integrations: [
+    sitemap({
+      i18n: { defaultLocale: 'pl', locales: { pl: 'pl-PL', en: 'en-US' } },
+    }),
+  ],
 });

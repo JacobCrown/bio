@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import type { Book } from '../../lib/content';
+import { localeOf } from '../../i18n';
+import { ui } from '../../i18n/ui';
 
 interface Props {
   book: Pick<Book, 'title' | 'author' | 'cover'>;
@@ -10,7 +12,8 @@ interface Props {
   alt?: string;
   eager?: boolean;
 }
-const { book, width, alt = `Cover of ${book.title}`, eager = false } = Astro.props;
+const t = ui[localeOf(Astro)];
+const { book, width, alt = t.coverOf(book.title), eager = false } = Astro.props;
 const height = Math.round(width * 1.5);
 ---
 

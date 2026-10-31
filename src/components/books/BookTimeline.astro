@@ -1,12 +1,15 @@
 ---
 import type { Book } from '../../lib/content';
 import BookEntry from './BookEntry.astro';
+import { localeOf } from '../../i18n';
+import { ui } from '../../i18n/ui';
 
 interface Props {
   /** Must already be sorted newest first (getBooks() does this). */
   books: Book[];
 }
 const { books } = Astro.props;
+const t = ui[localeOf(Astro)];
 
 const groups: { year: number; books: Book[] }[] = [];
 for (const book of books) {
@@ -24,7 +27,7 @@ for (const book of books) {
         <h2 id={`year-${group.year}`}>
           {group.year}
           <span class="mono count">
-            {group.books.length} {group.books.length === 1 ? 'book' : 'books'}
+            {t.bookCount(group.books.length)}
           </span>
         </h2>
         <ol>

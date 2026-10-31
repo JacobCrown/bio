@@ -1,5 +1,6 @@
 ---
 import { formatRange } from '../../lib/format';
+import { localeOf } from '../../i18n';
 
 interface Props {
   start?: Date | null;
@@ -8,7 +9,7 @@ interface Props {
   ongoing?: boolean;
 }
 const { start, end, ongoing = false } = Astro.props;
-const text = formatRange(start, end, { ongoing });
+const text = formatRange(start, end, localeOf(Astro), { ongoing });
 ---
 
 {text && <span class="date-range">{text}</span>}

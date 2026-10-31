@@ -1,0 +1,17 @@
+firstName: Jakub
+lastName: Korona
+title: Computer Vision Engineer/Software Developer
+location:
+  city: Katowice
+  country: Polska
+
+bio: >-
+  Jestem programistą specjalizującym się w dziedzinie wizji komputerowej i sztucznej inteligencji. Lubię trenować modele wizyjne na rzeczywistych danych oraz wdrażać je na produkcję.
+
+photo: ../../assets/profile/profile.png
+photoAlt: Zdjęcie profilowe
+
+links:
+  github: https://github.com/JacobCrown
+  linkedin: https://www.linkedin.com/in/example
+  email: jkbkorona@gmail.com 

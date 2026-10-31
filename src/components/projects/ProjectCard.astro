@@ -2,6 +2,8 @@
 import { Image } from 'astro:assets';
 import type { PersonalProject } from '../../lib/content';
 import { formatRange } from '../../lib/format';
+import { localeOf, localePath } from '../../i18n';
+import { ui } from '../../i18n/ui';
 import TechTags from '../shared/TechTags.astro';
 import DummyBadge from '../shared/DummyBadge.astro';
 import ProjectStatus from './ProjectStatus.astro';
@@ -10,9 +12,11 @@ interface Props {
   project: PersonalProject;
 }
 const { project } = Astro.props;
+const lang = localeOf(Astro);
+const t = ui[lang];
 const hasDetail = project.body.trim().length > 0;
-const detailUrl = `/projects/${project.id}/`;
-const dates = formatRange(project.startDate, project.endDate, { ongoing: project.status === 'ongoing' });
+const detailUrl = localePath(lang, `/projects/${project.id}/`);
+const dates = formatRange(project.startDate, project.endDate, lang, { ongoing: project.status === 'ongoing' });
 ---
 
 <article class="card">
@@ -21,7 +25,7 @@ const dates = formatRange(project.startDate, project.endDate, { ongoing: project
       <Image
         class="card__image"
         src={project.image}
-        alt={project.imageAlt ?? `Screenshot of ${project.name}`}
+        alt={project.imageAlt ?? t.screenshotOf(project.name)}
         width={640}
         widths={[400, 640, 960]}
         sizes="(min-width: 48rem) 30rem, 100vw"
@@ -44,17 +48,17 @@ const dates = formatRange(project.startDate, project.endDate, { ongoing: project
     {
       hasDetail && (
         <li>
-          <a href={detailUrl}>Details →</a>
+          <a href={detailUrl}>{t.details} →</a>
         </li>
       )
     }
     <li>
-      <a href={project.repo} rel="noopener">GitHub ↗</a>
+      <a href={project.repo} rel="noopener">{t.contact.github} ↗</a>
     </li>
     {
       project.demo && (
         <li>
-          <a href={project.demo} rel="noopener">Live demo ↗</a>
+          <a href={project.demo} rel="noopener">{t.liveDemo} ↗</a>
         </li>
       )
     }

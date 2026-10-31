@@ -2,17 +2,20 @@
 import type { Education } from '../../lib/content';
 import SectionHeading from '../shared/SectionHeading.astro';
 import EducationEntry from './EducationEntry.astro';
+import { localeOf } from '../../i18n';
+import { ui } from '../../i18n/ui';
 
 interface Props {
   education: Education[];
 }
 const { education } = Astro.props;
+const t = ui[localeOf(Astro)];
 ---
 
 {
   education.length > 0 && (
     <section aria-labelledby="education" class="section">
-      <SectionHeading id="education" title="Education" />
+      <SectionHeading id="education" title={t.sections.education} />
       <div class="timeline">
         {education.map((entry) => (
           <EducationEntry entry={entry} />

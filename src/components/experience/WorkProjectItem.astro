@@ -5,11 +5,14 @@ import TechTags from '../shared/TechTags.astro';
 import DateRange from '../shared/DateRange.astro';
 import ExternalLinks from '../shared/ExternalLinks.astro';
 import DummyBadge from '../shared/DummyBadge.astro';
+import { localeOf } from '../../i18n';
+import { ui } from '../../i18n/ui';
 
 interface Props {
   project: WorkProject;
 }
 const { project } = Astro.props;
+const t = ui[localeOf(Astro)];
 const hasBody = project.body.trim().length > 0;
 const hasMore =
   hasBody || project.responsibilities.length > 0 || project.achievements.length > 0 || project.links.length > 0;
@@ -38,8 +41,8 @@ const hasMore =
     hasMore && (
       <details class="more">
         <summary>
-          <span class="when-closed">Read more</span>
-          <span class="when-open">Show less</span>
+          <span class="when-closed">{t.readMore}</span>
+          <span class="when-open">{t.showLess}</span>
         </summary>
 
         <div class="more__content">
@@ -47,7 +50,7 @@ const hasMore =
             <div class="lists">
               {project.responsibilities.length > 0 && (
                 <section>
-                  <h5>Responsibilities</h5>
+                  <h5>{t.responsibilities}</h5>
                   <ul>
                     {project.responsibilities.map((item) => (
                       <li>{item}</li>
@@ -57,7 +60,7 @@ const hasMore =
               )}
               {project.achievements.length > 0 && (
                 <section>
-                  <h5>Results</h5>
+                  <h5>{t.results}</h5>
                   <ul class="results">
                     {project.achievements.map((item) => (
                       <li>{item}</li>

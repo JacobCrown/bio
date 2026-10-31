@@ -1,0 +1,22 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHeader from '../../../components/shared/PageHeader.astro';
+import ProjectGrid from '../../../components/projects/ProjectGrid.astro';
+import { getPersonalProjects } from '../../../lib/content';
+import { locales, localeOf } from '../../../i18n';
+import { ui } from '../../../i18n/ui';
+
+export const getStaticPaths = (() => locales.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = localeOf(Astro);
+const t = ui[lang];
+const projects = await getPersonalProjects(lang);
+---
+
+<BaseLayout title={t.sections.projects} description={t.projectsPage.description}>
+  <div class="container">
+    <PageHeader title={t.sections.projects} intro={t.projectsPage.intro} />
+    <ProjectGrid projects={projects} />
+  </div>
+</BaseLayout>

@@ -2,12 +2,16 @@
 interface Props {
   items: string[];
 }
+import { localeOf } from '../../i18n';
+import { ui } from '../../i18n/ui';
+
 const { items } = Astro.props;
+const t = ui[localeOf(Astro)];
 ---
 
 {
   items.length > 0 && (
-    <ul class="tags" aria-label="Technologies">
+    <ul class="tags" aria-label={t.technologies}>
       {items.map((item) => (
         <li>{item}</li>
       ))}

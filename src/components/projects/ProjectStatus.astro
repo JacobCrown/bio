@@ -1,14 +1,16 @@
 ---
 import type { ProjectStatus } from '../../schemas';
+import { localeOf } from '../../i18n';
+import { ui } from '../../i18n/ui';
 
 interface Props {
   status: ProjectStatus;
 }
 const { status } = Astro.props;
-const labels: Record<ProjectStatus, string> = { completed: 'Completed', ongoing: 'Ongoing', archived: 'Archived' };
+const label = ui[localeOf(Astro)].status[status];
 ---
 
-<span class={`status status--${status}`}><span class="dot" aria-hidden="true"></span>{labels[status]}</span>
+<span class={`status status--${status}`}><span class="dot" aria-hidden="true"></span>{label}</span>
 
 <style>
   .status {

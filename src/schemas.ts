@@ -12,7 +12,6 @@
  */
 import { z } from 'astro/zod';
 import type { SchemaContext } from 'astro/content/config';
-import { reference } from 'astro:content';
 
 // ---------------------------------------------------------------------------
 // Shared building blocks
@@ -122,8 +121,8 @@ export const employerSchema = ({ image }: SchemaContext) =>
 export const workProjectSchema = () =>
   z
     .object({
-      /** Slug of the employer file, e.g. "northwind-analytics". Validated at build time. */
-      employer: reference('employers'),
+      /** Slug of the employer file, e.g. "northwind-analytics" (without the .pl/.en suffix). Validated in lib/content.ts. */
+      employer: text,
       name: text,
       role: text,
       /** 1–3 sentences. Always visible in the timeline. */

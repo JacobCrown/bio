@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import type { Education } from '../../lib/content';
 import { formatRange } from '../../lib/format';
+import { localeOf } from '../../i18n';
 import DummyBadge from '../shared/DummyBadge.astro';
 import Prose from '../shared/Prose.astro';
 
@@ -13,7 +14,7 @@ const { entry } = Astro.props;
 
 <article class:list={['education', { 'education--current': entry.endDate === null }]}>
   <div class="education__period mono">
-    <p class="education__dates">{formatRange(entry.startDate, entry.endDate, { ongoing: true })}</p>
+    <p class="education__dates">{formatRange(entry.startDate, entry.endDate, localeOf(Astro), { ongoing: true })}</p>
     {entry.location && <p>{entry.location}</p>}
   </div>
 

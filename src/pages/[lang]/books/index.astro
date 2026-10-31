@@ -1,0 +1,23 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHeader from '../../../components/shared/PageHeader.astro';
+import BookTimeline from '../../../components/books/BookTimeline.astro';
+import { getBooks } from '../../../lib/content';
+import { locales, localeOf } from '../../../i18n';
+import { ui } from '../../../i18n/ui';
+
+export const getStaticPaths = (() => locales.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = localeOf(Astro);
+const t = ui[lang];
+const books = await getBooks(lang);
+const intro = t.booksPage.intro(books.length);
+---
+
+<BaseLayout title={t.readingJournal} description={t.booksPage.description}>
+  <div class="container">
+    <PageHeader title={t.readingJournal} intro={intro} />
+    <BookTimeline books={books} />
+  </div>
+</BaseLayout>
