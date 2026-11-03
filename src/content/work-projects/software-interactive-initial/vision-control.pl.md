@@ -15,6 +15,4 @@ responsibilities:
 stack: [Python, C#, onnx, YOLO, FastAPI, Pytorch]
 ---
 
-## Cele i architektura
-
 Celem projektu jest zaprojektowanie, implementacja i wdrożenie systemu do kontroli jakości na lini produkcyjnej, wyeliminowanie czynnika błędu ludzkiego oraz zastąpienie człowieka. Aktualnie kontrolę jakości przeprowadzają pracownicy, ale znaczna część wad jest pomijana, ze względu na dość sporą prędkość poruszania się obiektu zainteresowań oraz jego liczebność. Zbyt duża ilość wad skutkuje zwrotami palet oraz dodatkowymi kosztami. Automatyzacja procesu pozwoli zaoszczędzić sporo pieniędzy. Architektura polega na odebraniu zdjęcia obiektu z wielu kamer, przetworzeniu go w czasie rzeczywistym i stwierdzenie wadliwości puszki.

@@ -14,24 +14,31 @@ interface Props {
 const { project } = Astro.props;
 const t = ui[localeOf(Astro)];
 const hasBody = project.body.trim().length > 0;
-const hasMore =
-  hasBody || project.responsibilities.length > 0 || project.achievements.length > 0 || project.links.length > 0;
+const hasLists = project.responsibilities.length > 0 || project.achievements.length > 0;
+const hasMore = hasBody || hasLists;
 ---
 
 <article class="project panel">
   <header class="project__head">
     <h4>{project.name} {project.dummy && <DummyBadge />}</h4>
-    <p class="project__meta">
-      <span class="project__role">{project.role}</span>
-      {
-        (project.startDate || project.endDate) && (
-          <span class="pill">
-            <DateRange start={project.startDate} end={project.endDate} ongoing />
-          </span>
-        )
-      }
-    </p>
+    {
+      project.links.length > 0 && (
+        <div class="project__links">
+          <ExternalLinks links={project.links} />
+        </div>
+      )
+    }
   </header>
+  <p class="project__meta">
+    <span class="project__role">{project.role}</span>
+    {
+      (project.startDate || project.endDate) && (
+        <span class="pill">
+          <DateRange start={project.startDate} end={project.endDate} ongoing />
+        </span>
+      )
+    }
+  </p>
 
   <p class="project__summary">{project.summary}</p>
   <TechTags items={project.stack} />
@@ -45,32 +52,40 @@ const hasMore =
         </summary>
 
         <div class="more__content">
-          {(project.responsibilities.length > 0 || project.achievements.length > 0) && (
-            <div class="lists">
-              {project.responsibilities.length > 0 && (
-                <section>
-                  <h5>{t.responsibilities}</h5>
-                  <ul>
-                    {project.responsibilities.map((item) => (
-                      <li>{item}</li>
-                    ))}
-                  </ul>
-                </section>
-              )}
-              {project.achievements.length > 0 && (
-                <section>
-                  <h5>{t.results}</h5>
-                  <ul class="results">
-                    {project.achievements.map((item) => (
-                      <li>{item}</li>
-                    ))}
-                  </ul>
-                </section>
-              )}
-            </div>
-          )}
-          {hasBody && <Prose markdown={project.body} headingOffset={3} />}
-          <ExternalLinks links={project.links} />
+          {
+            hasBody && (
+              <section class="about">
+                <h5>{t.about}</h5>
+                <Prose markdown={project.body} headingOffset={3} />
+              </section>
+            )
+          }
+          {
+            hasLists && (
+              <div class="lists">
+                {project.responsibilities.length > 0 && (
+                  <section>
+                    <h5>{t.responsibilities}</h5>
+                    <ul>
+                      {project.responsibilities.map((item) => (
+                        <li>{item}</li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+                {project.achievements.length > 0 && (
+                  <section>
+                    <h5>{t.results}</h5>
+                    <ul class="results">
+                      {project.achievements.map((item) => (
+                        <li>{item}</li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+              </div>
+            )
+          }
         </div>
       </details>
     )
@@ -83,6 +98,7 @@ const hasMore =
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-3);
     justify-items: start;
+    container-type: inline-size;
     padding: var(--space-5) var(--space-6);
     transition: box-shadow var(--duration-fast) var(--ease-out);
   }
@@ -90,8 +106,16 @@ const hasMore =
     box-shadow: var(--shadow-lift);
   }
   .project__head {
-    display: grid;
-    gap: var(--space-2);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    width: 100%;
+  }
+  .project__links {
+    margin-left: auto;
+    padding-top: var(--space-1);
   }
   h4 {
     font-size: var(--text-xl);
@@ -155,14 +179,16 @@ const hasMore =
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
     margin-top: var(--space-4);
-    padding: var(--space-1) 0 var(--space-3) var(--space-4);
-    border-left: 2px solid var(--color-line);
+    padding: var(--space-5) var(--space-6);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    font-size: 1.1rem;
   }
   .lists {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-5) var(--space-7);
-    max-width: 48rem;
+    gap: var(--space-5);
   }
   h5 {
     margin-bottom: var(--space-2);
@@ -192,9 +218,11 @@ const hasMore =
     height: 2px;
   }
 
-  @media (min-width: 48rem) {
-    .lists:has(> section:nth-child(2)) {
+  @container (min-width: 36rem) {
+    .more__content:has(> .about):has(> .lists) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+      gap: var(--space-6);
     }
   }
 </style>

@@ -1,9 +1,9 @@
 ---
 employer: software-interactive
 name: Serwer obliczeniowy AI
-role: Computer Vision Engineer/Software Developer/MlOps
+role: Computer Vision Engineer/Software Developer/MLOps
 summary: >-
-  Zaprojektowanie, implementacja, wdrożenie i utrzymanie serwera obliczeniowego do autmatyzacji zadań wspomagający annotatorów. Serwer odpowiedzialny jest za wykrywanie i oznaczanie obiektów na zdjęciach, np. znaków pionowych, poziomych, reklam, drzew na potrzeby ewidencji dróg.
+  System wspomagający pracę ludzkich annotatorów, oznaczający różnorodne elementy na nagraniach z polskich dróg. System umożliwia automatyczne wykrywanie i oznaczanie takich elementów jak: reklamy, znaki pionowe, znaki poziome (linie), urządzenia bezpieczeństwa drogowego, obiekty infrastruktury drogowej (studzienki, kanalizacja, hydranty, przystanki). Udostępniony jako serwer on-premise, działający na dostarczonych nagraniach z dysków na infrastrukturze klienckiej.
 
 startDate: 2025-04
 endDate: 2026-09
@@ -22,7 +22,5 @@ achievements:
   - Modułowa konstrukcja, która pozwala dodawać kolejne typy wykrywanych obiektów.
 stack: [Python, FastAPI, Celery, RabbitMQ, PyTorch, OpenCV, SQL Server, SQLAlchemy, Docker, DVC, Azure, pytest]
 ---
-
-## Cele i architektura
 
 Celem projektu jest automatyzacja ewidencji dróg na podstawie dużych zbiorów zdjęć, w tym wykrywanie i klasyfikacja elementów infrastruktury (znaki pionowe, poziome, studzienki, hydranty, drzewa). System składa się z usługi REST, kolejki zadań i niezależnych procesów roboczych, w których modele ML działają na GPU. Wyniki trafiają do relacyjnej bazy danych. Całość jest uruchamiana w kontenerach.

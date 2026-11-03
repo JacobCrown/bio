@@ -7,15 +7,15 @@ summary: >-
   na podstawie dziennych danych ze zbiorników. Łączy modele uczenia maszynowego
   z usługą API i zapisem informacji zwrotnej od analityków.
 startDate: 2025-09
-endDate: 2026-08
+endDate: 2026-10
 responsibilities:
   - Rozwijanie potoku przetwarzania danych i inferencji dla szeregów czasowych.
   - Trenowanie i ewaluacja modeli klasyfikacyjnych oraz wykrywających anomalie.
   - Tworzenie usługi REST udostępniającej wyniki analitykom.
   - Przygotowanie konteneryzacji, testów i dokumentacji do uruchamiania systemu.
-stack: [Python, FastAPI, MongoDB, CatBoost, scikit-learn, pandas, Docker, Streamlit]
+  - Rozwój aplikacji do wizualizacji wyników
+  - Tworzenie narzędzia do automatycznego doszkalania modelu AI
+stack: [Python, FastAPI, MongoDB, CatBoost, scikit-learn, pandas, Docker, Streamlit, pytest]
 ---
-
-## Cele i architektura
 
 Celem projektu jest przyspieszenie i usystematyzowanie pracy analityków przy wyjaśnianiu ubytków paliwa. System składa się z usługi REST, potoku uczenia maszynowego uruchamianego w ramach tej usługi oraz bazy danych przechowującej wyniki i decyzje analityków. Całość jest uruchamiana w kontenerach, a do wizualnej inspekcji wyników służy osobna aplikacja GUI. Decyzje są zbierane w bazie danych w celu późniejszego udoskonalania modelu sztucznej inteligencji

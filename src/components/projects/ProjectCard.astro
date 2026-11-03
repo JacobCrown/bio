@@ -38,32 +38,32 @@ const dates = formatRange(project.startDate, project.endDate, lang, { ongoing: p
         {hasDetail ? <a href={detailUrl}>{project.name}</a> : project.name}
         {project.dummy && <DummyBadge />}
       </h3>
-      <p class="card__meta">
-        <ProjectStatus status={project.status} />
-        {dates && <span class="pill">{dates}</span>}
-      </p>
+      <ul class="card__links">
+        {
+          hasDetail && (
+            <li>
+              <a href={detailUrl}>{t.details} →</a>
+            </li>
+          )
+        }
+        <li>
+          <a href={project.repo} rel="noopener">{t.contact.github} ↗</a>
+        </li>
+        {
+          project.demo && (
+            <li>
+              <a href={project.demo} rel="noopener">{t.liveDemo} ↗</a>
+            </li>
+          )
+        }
+      </ul>
     </header>
+    <p class="card__meta">
+      <ProjectStatus status={project.status} />
+      {dates && <span class="pill">{dates}</span>}
+    </p>
     <p class="card__summary">{project.summary}</p>
     <TechTags items={project.stack} />
-    <ul class="card__links">
-      {
-        hasDetail && (
-          <li>
-            <a href={detailUrl}>{t.details} →</a>
-          </li>
-        )
-      }
-      <li>
-        <a href={project.repo} rel="noopener">{t.contact.github} ↗</a>
-      </li>
-      {
-        project.demo && (
-          <li>
-            <a href={project.demo} rel="noopener">{t.liveDemo} ↗</a>
-          </li>
-        )
-      }
-    </ul>
   </div>
 </article>
 
@@ -94,9 +94,12 @@ const dates = formatRange(project.startDate, project.endDate, lang, { ongoing: p
     padding: var(--space-5) var(--space-6) var(--space-6);
   }
   .card__head {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-2);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    width: 100%;
   }
   h3 {
     font-size: var(--text-xl);
@@ -119,8 +122,9 @@ const dates = formatRange(project.startDate, project.endDate, lang, { ongoing: p
   .card__links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-1) var(--space-5);
-    margin-top: var(--space-1);
+    gap: var(--space-1) var(--space-4);
+    margin-left: auto;
+    padding-top: var(--space-1);
     font-family: var(--font-mono);
     font-size: var(--text-sm);
   }
