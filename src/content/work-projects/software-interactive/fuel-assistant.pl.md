@@ -18,4 +18,4 @@ responsibilities:
 stack: [Python, FastAPI, MongoDB, CatBoost, scikit-learn, pandas, Docker, Streamlit, pytest]
 ---
 
-Celem projektu jest przyspieszenie i usystematyzowanie pracy analityków przy wyjaśnianiu ubytków paliwa. System składa się z usługi REST, potoku uczenia maszynowego uruchamianego w ramach tej usługi oraz bazy danych przechowującej wyniki i decyzje analityków. Całość jest uruchamiana w kontenerach, a do wizualnej inspekcji wyników służy osobna aplikacja GUI. Decyzje są zbierane w bazie danych w celu późniejszego udoskonalania modelu sztucznej inteligencji
+Celem projektu jest przyspieszenie i usystematyzowanie pracy analityków przy wyjaśnianiu ubytków paliwa. System składa się z usługi REST, potoku uczenia maszynowego uruchamianego w ramach tej usługi oraz bazy danych przechowującej wyniki i decyzje analityków. Całość jest uruchamiana w kontenerach, a do wizualnej inspekcji wyników służy osobna aplikacja GUI. Decyzje są zbierane w bazie danych w celu późniejszego udoskonalania modelu sztucznej inteligencji.

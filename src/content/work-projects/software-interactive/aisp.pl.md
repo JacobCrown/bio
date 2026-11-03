@@ -3,7 +3,7 @@ employer: software-interactive
 name: AITracker
 role: Computer Vision Engineer/Software Developer
 summary: >-
-  System analizujący nagrania z kamer umieszczonych przy drogach: wykrywa, śledzi i klasyfikuje uczestników ruchu. Rozróżnika kilkanaście kategorii pojazdów (samochody osobowe, rowerzyści, ciężarówki itp.). System zlicza przejazdy samochodów w celach statystycznych.
+  System analizujący nagrania z kamer umieszczonych przy drogach: wykrywa, śledzi i klasyfikuje uczestników ruchu. Umożliwia wykrywanie kilkunastu kategorii pojazdów (samochody osobowe, rowerzyści, ciężarówki itp.). System zlicza przejazdy pojazdów w celach statystycznych.
 startDate: 2024-12
 endDate: 2025-03
 responsibilities:

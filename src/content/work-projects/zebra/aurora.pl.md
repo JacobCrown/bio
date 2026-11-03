@@ -10,7 +10,7 @@ endDate: 2024-02
 responsibilities:
   - Udział w spotkaniach, planowanie sprintów, monitorowanie postępu prac
   - Rozwój aplikacji do trenowania sieci głębokich
-  - Przeniesienie funkcjonalności z technologii TensorFlow na Pytorch
+  - Przeniesienie funkcjonalności z technologii TensorFlow na PyTorch
   - Pisanie testów jednostkowych
   - Ścisła współpraca w międzynarodowym zespole, w tym z zespołem z Kanady
   - Sprawdzanie kodu innych programistów
@@ -20,4 +20,4 @@ links:
     url: https://www.zebra.com/pl/pl/products/oem/software/aurora-vision-studio.html
 ---
 
-Celem projektu jest umożliwienie klientowi końcowemu trenowanie modeli wizyjnych na własnych danych oraz ich wdrażanie bez konieczności pisania kodu. Projekt składa się z dwóch osobnych aplikacji - GUI oraz backendu. GUI steruje backendem, który służy jako jednostka wykonująca instrukcje wedle określonej konfiguracji. Umożliwia to sterowanie procesem uczenia w sposób ściśle graficzny i intuicyjny. 
+Celem projektu jest umożliwienie klientowi końcowemu trenowania modeli wizyjnych na własnych danych oraz ich wdrażania bez konieczności pisania kodu. Projekt składa się z dwóch osobnych aplikacji - GUI oraz backendu. GUI steruje backendem, który służy jako jednostka wykonująca instrukcje wedle określonej konfiguracji. Umożliwia to sterowanie procesem uczenia w sposób ściśle graficzny i intuicyjny. 
