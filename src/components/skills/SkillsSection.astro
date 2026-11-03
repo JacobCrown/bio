@@ -1,0 +1,97 @@
+---
+import type { Skill } from '../../lib/content';
+import SectionHeading from '../shared/SectionHeading.astro';
+import { localeOf } from '../../i18n';
+import { ui } from '../../i18n/ui';
+
+interface Props {
+  /** Already sorted, most used first (collectSkills() does this). */
+  skills: Skill[];
+}
+const { skills } = Astro.props;
+const t = ui[localeOf(Astro)];
+// Technologies used in several projects get a bar; the one-off ones go into a plain tag list.
+const ranked = skills.filter((skill) => skill.count > 1);
+const rest = skills.filter((skill) => skill.count === 1);
+const max = ranked[0]?.count ?? 1;
+---
+
+{
+  skills.length > 0 && (
+    <section aria-labelledby="skills" class="section">
+      <SectionHeading id="skills" title={t.sections.skills} />
+      {ranked.length > 0 && (
+        <ul class="skills" aria-label={t.technologies}>
+          {ranked.map((skill) => (
+            <li class="skill">
+              <span class="skill__name">{skill.name}</span>
+              <span class="skill__bar" aria-hidden="true">
+                <span style={`width: ${Math.round((skill.count / max) * 100)}%`} />
+              </span>
+              <span class="skill__count mono">{skill.count}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {rest.length > 0 && (
+        <ul class="more-skills" aria-label={t.technologies}>
+          {rest.map((skill) => (
+            <li class="tag">{skill.name}</li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
+}
+
+<style>
+  .section {
+    margin-bottom: var(--space-8);
+  }
+  .skills {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3) var(--space-6);
+  }
+  .skill {
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) 2.5ch;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .skill__name {
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .skill__bar {
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--color-line);
+    overflow: hidden;
+  }
+  .skill__bar > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-accent);
+  }
+  .skill__count {
+    justify-self: end;
+    color: var(--color-ink-soft);
+  }
+  .more-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-6);
+  }
+
+  @media (min-width: 40rem) {
+    .skills {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

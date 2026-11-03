@@ -38,7 +38,6 @@ const nav = [
   { label: t.nav.education, href: '/#education' },
   { label: t.nav.experience, href: '/#experience' },
   { label: t.nav.projects, href: '/projects/' },
-  { label: t.nav.reading, href: '/books/' },
 ];
 // Path without the language prefix ("/pl/books/x/" -> "/books/x/"), used to match the nav
 // and to build the same page in the other language. Pages outside /pl/ and /en/ (404) keep their path.
@@ -157,7 +156,14 @@ const languageSwitch = locales.map((locale) => ({
   }
 
   .site-header {
-    padding-block: var(--space-5);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding-block: var(--space-4);
+    background: var(--color-header);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-line);
   }
   .site-header__inner {
     display: flex;

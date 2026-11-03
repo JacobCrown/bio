@@ -18,7 +18,7 @@ const current = employer.endDate === null;
 
 <article class:list={['employer', { 'employer--current': current }]}>
   <div class="employer__period mono">
-    <p class="employer__dates">{formatRange(employer.startDate, employer.endDate, lang, { ongoing: true })}</p>
+    <p class="pill employer__dates">{formatRange(employer.startDate, employer.endDate, lang, { ongoing: true })}</p>
     <p>{formatDuration(employer.startDate, employer.endDate, lang)}</p>
     {employer.location && <p>{employer.location}</p>}
   </div>
@@ -72,17 +72,14 @@ const current = employer.endDate === null;
   .employer__period {
     display: flex;
     flex-wrap: wrap;
-    gap: 0 var(--space-3);
-  }
-  .employer__dates {
-    color: var(--color-ink);
-    font-weight: 500;
+    align-items: flex-start;
+    gap: var(--space-2) var(--space-3);
   }
 
   .employer__main {
     position: relative;
     padding-left: var(--space-5);
-    padding-bottom: var(--space-8);
+    padding-bottom: var(--space-7);
     border-left: 1px solid var(--color-line);
   }
   .employer__main::before {
@@ -133,12 +130,14 @@ const current = employer.endDate === null;
     color: var(--color-ink-soft);
   }
   .employer__projects {
+    display: grid;
+    gap: var(--space-4);
     margin-top: var(--space-5);
   }
 
   @media (min-width: 48rem) {
     .employer {
-      grid-template-columns: 10rem minmax(0, 1fr);
+      grid-template-columns: 12.5rem minmax(0, 1fr);
       gap: var(--space-6);
     }
     .employer__period {

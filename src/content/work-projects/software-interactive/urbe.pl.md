@@ -1,11 +1,11 @@
 ---
-employer: software-interactive
+employer: software-interactive-initial
 name: Aplikacja wsparcia kurierów
 role: Backend Developer
 summary: >-
   System dla kurierów poruszający się na rowerach elektrycznych z przyczepką (urb-e bike) wykonujących dostawy "Last Mile delivery". Umożliwiający śledzenie lokalizacji kuriera, obliczający optymalne trasy dostawy oraz odbioru przesyłki. 
-startDate: 2023-03
-endDate: 2023-08
+startDate: 2022-03
+endDate: 2022-08
 responsibilities:
   - Współpraca z frontendowcami
   - Rozwój aplikacji backendowej

@@ -22,7 +22,13 @@ const { projects } = Astro.props;
   .grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-7) var(--space-7);
+    gap: var(--space-6);
+  }
+  .grid > li {
+    display: flex;
+  }
+  .grid > li > :global(*) {
+    flex: 1;
   }
   @media (min-width: 48rem) {
     .grid {

@@ -13,7 +13,7 @@ const t = ui[localeOf(Astro)];
   items.length > 0 && (
     <ul class="tags" aria-label={t.technologies}>
       {items.map((item) => (
-        <li>{item}</li>
+        <li class="tag">{item}</li>
       ))}
     </ul>
   )
@@ -23,15 +23,6 @@ const t = ui[localeOf(Astro)];
   .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-1) var(--space-2);
-  }
-  li {
-    padding: 0.1rem 0.5rem;
-    background: var(--color-surface);
-    border-radius: 3px;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    line-height: 1.7;
-    color: var(--color-ink-soft);
+    gap: var(--space-2);
   }
 </style>

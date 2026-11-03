@@ -1,15 +1,15 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import BookCover from '../../../components/books/BookCover.astro';
-import Rating from '../../../components/shared/Rating.astro';
-import Prose from '../../../components/shared/Prose.astro';
-import DummyBadge from '../../../components/shared/DummyBadge.astro';
-import { getBooks, type Book } from '../../../lib/content';
-import { firstParagraph } from '../../../lib/markdown';
-import { formatDay, isoDate } from '../../../lib/format';
-import { locales, localeOf, localePath } from '../../../i18n';
-import { ui } from '../../../i18n/ui';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookCover from '../../components/books/BookCover.astro';
+import Rating from '../../components/shared/Rating.astro';
+import Prose from '../../components/shared/Prose.astro';
+import DummyBadge from '../../components/shared/DummyBadge.astro';
+import { getBooks, type Book } from '../../lib/content';
+import { firstParagraph } from '../../lib/markdown';
+import { formatDay, isoDate } from '../../lib/format';
+import { locales, localeOf, localePath } from '../../i18n';
+import { ui } from '../../i18n/ui';
 
 export const getStaticPaths = (async () => {
   const pages = await Promise.all(

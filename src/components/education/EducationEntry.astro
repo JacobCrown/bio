@@ -14,36 +14,38 @@ const { entry } = Astro.props;
 
 <article class:list={['education', { 'education--current': entry.endDate === null }]}>
   <div class="education__period mono">
-    <p class="education__dates">{formatRange(entry.startDate, entry.endDate, localeOf(Astro), { ongoing: true })}</p>
+    <p class="pill education__dates">{formatRange(entry.startDate, entry.endDate, localeOf(Astro), { ongoing: true })}</p>
     {entry.location && <p>{entry.location}</p>}
   </div>
 
   <div class="education__main">
-    <header class="education__head">
-      {
-        entry.logo && (
-          <Image class="education__logo" src={entry.logo} alt="" width={48} height={48} densities={[1, 2]} />
-        )
-      }
-      <div>
-        <h3>
-          {
-            entry.website ? (
-              <a href={entry.website} rel="noopener">
-                {entry.institution}
-              </a>
-            ) : (
-              entry.institution
-            )
-          }
-          {entry.dummy && <DummyBadge />}
-        </h3>
-        <p class="education__degree">
-          {entry.degree}{entry.field && <>, {entry.field}</>}
-        </p>
-      </div>
-    </header>
-    {entry.description && <Prose class="education__description" markdown={entry.description} />}
+    <div class="panel education__card">
+      <header class="education__head">
+        {
+          entry.logo && (
+            <Image class="education__logo" src={entry.logo} alt="" width={48} height={48} densities={[1, 2]} />
+          )
+        }
+        <div>
+          <h3>
+            {
+              entry.website ? (
+                <a href={entry.website} rel="noopener">
+                  {entry.institution}
+                </a>
+              ) : (
+                entry.institution
+              )
+            }
+            {entry.dummy && <DummyBadge />}
+          </h3>
+          <p class="education__degree">
+            {entry.degree}{entry.field && <>, {entry.field}</>}
+          </p>
+        </div>
+      </header>
+      {entry.description && <Prose class="education__description" markdown={entry.description} />}
+    </div>
   </div>
 </article>
 
@@ -56,11 +58,11 @@ const { entry } = Astro.props;
   .education__period {
     display: flex;
     flex-wrap: wrap;
-    gap: 0 var(--space-3);
+    align-items: flex-start;
+    gap: var(--space-2) var(--space-3);
   }
-  .education__dates {
-    color: var(--color-ink);
-    font-weight: 500;
+  .education__card {
+    padding: var(--space-5) var(--space-6);
   }
   .education__main {
     position: relative;
@@ -72,7 +74,7 @@ const { entry } = Astro.props;
     content: '';
     position: absolute;
     left: -5px;
-    top: 0.5em;
+    top: calc(var(--space-5) + 0.6em);
     width: 9px;
     height: 9px;
     border-radius: 50%;
@@ -116,7 +118,7 @@ const { entry } = Astro.props;
 
   @media (min-width: 48rem) {
     .education {
-      grid-template-columns: 10rem minmax(0, 1fr);
+      grid-template-columns: 12.5rem minmax(0, 1fr);
       gap: var(--space-6);
     }
     .education__period {

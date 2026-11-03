@@ -18,17 +18,16 @@ const hasMore =
   hasBody || project.responsibilities.length > 0 || project.achievements.length > 0 || project.links.length > 0;
 ---
 
-<article class="project">
-  <header>
+<article class="project panel">
+  <header class="project__head">
     <h4>{project.name} {project.dummy && <DummyBadge />}</h4>
-    <p class="mono project__meta">
+    <p class="project__meta">
       <span class="project__role">{project.role}</span>
       {
         (project.startDate || project.endDate) && (
-          <>
-            <span aria-hidden="true"> · </span>
+          <span class="pill">
             <DateRange start={project.startDate} end={project.endDate} ongoing />
-          </>
+          </span>
         )
       }
     </p>
@@ -84,23 +83,29 @@ const hasMore =
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-3);
     justify-items: start;
-    padding-block: var(--space-5);
-    border-top: 1px solid var(--color-line);
+    padding: var(--space-5) var(--space-6);
+    transition: box-shadow var(--duration-fast) var(--ease-out);
   }
-  .project:first-child {
-    border-top: 0;
-    padding-top: var(--space-2);
+  .project:hover {
+    box-shadow: var(--shadow-lift);
+  }
+  .project__head {
+    display: grid;
+    gap: var(--space-2);
   }
   h4 {
-    font-size: var(--text-lg);
-    letter-spacing: -0.005em;
+    font-size: var(--text-xl);
+    letter-spacing: -0.01em;
   }
   .project__meta {
-    margin-top: var(--space-1);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
   }
   .project__role {
-    color: var(--color-ink);
-    font-weight: 500;
+    color: var(--color-ink-soft);
+    font-style: italic;
   }
   .project__summary {
     max-width: var(--measure);

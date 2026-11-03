@@ -10,15 +10,10 @@ const { status } = Astro.props;
 const label = ui[localeOf(Astro)].status[status];
 ---
 
-<span class={`status status--${status}`}><span class="dot" aria-hidden="true"></span>{label}</span>
+<span class={`pill status status--${status}`}><span class="dot" aria-hidden="true"></span>{label}</span>
 
 <style>
   .status {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
     color: var(--color-ink-soft);
   }
   .dot {

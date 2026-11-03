@@ -113,6 +113,28 @@ export async function getBooks(locale: Locale): Promise<Book[]> {
     .sort((a, b) => time(b.finishedAt) - time(a.finishedAt) || a.title.localeCompare(b.title));
 }
 
+export type Skill = { name: string; count: number };
+
+/**
+ * Technologies across all projects (one stack per project), most used first.
+ * Case-insensitive; the first spelling seen is kept for display.
+ */
+export function collectSkills(stacks: string[][]): Skill[] {
+  const skills = new Map<string, Skill>();
+  for (const stack of stacks) {
+    const seen = new Set<string>();
+    for (const name of stack) {
+      const key = name.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const skill = skills.get(key);
+      if (skill) skill.count += 1;
+      else skills.set(key, { name, count: 1 });
+    }
+  }
+  return [...skills.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+}
+
 const endOfMonth = (date: Date) => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0));
 
 function warnIfOutsideEmployment(employer: EmployerData, project: WorkProject) {

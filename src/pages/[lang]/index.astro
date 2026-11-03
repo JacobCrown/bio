@@ -5,9 +5,9 @@ import ProfileHero from '../../components/profile/ProfileHero.astro';
 import EducationTimeline from '../../components/education/EducationTimeline.astro';
 import ExperienceTimeline from '../../components/experience/ExperienceTimeline.astro';
 import ProjectGrid from '../../components/projects/ProjectGrid.astro';
-import BookEntry from '../../components/books/BookEntry.astro';
 import SectionHeading from '../../components/shared/SectionHeading.astro';
-import { getBooks, getEducation, getEmployers, getPersonalProjects, getProfile } from '../../lib/content';
+import SkillsSection from '../../components/skills/SkillsSection.astro';
+import { collectSkills, getEducation, getEmployers, getPersonalProjects, getProfile } from '../../lib/content';
 import { locales, localeOf, localePath } from '../../i18n';
 import { ui } from '../../i18n/ui';
 
@@ -15,15 +15,17 @@ export const getStaticPaths = (() => locales.map((lang) => ({ params: { lang } }
 
 const lang = localeOf(Astro);
 const t = ui[lang];
-const [profile, education, employers, projects, books] = await Promise.all([
+const [profile, education, employers, projects] = await Promise.all([
   getProfile(lang),
   getEducation(lang),
   getEmployers(lang),
   getPersonalProjects(lang),
-  getBooks(lang),
 ]);
 const featured = projects.filter((project) => project.featured);
-const latestBooks = books.slice(0, 3);
+const skills = collectSkills([
+  ...employers.flatMap((employer) => employer.projects.map((project) => project.stack)),
+  ...projects.map((project) => project.stack),
+]);
 
 const fullName = `${profile.firstName} ${profile.lastName}`;
 const jsonLd = {
@@ -41,6 +43,8 @@ const jsonLd = {
   <div class="container">
     <ProfileHero profile={profile} />
 
+    <SkillsSection skills={skills} />
+
     <EducationTimeline education={education} />
 
     <ExperienceTimeline employers={employers} />
@@ -54,35 +58,11 @@ const jsonLd = {
       )
     }
 
-    {
-      latestBooks.length > 0 && (
-        <section aria-labelledby="reading" class="section">
-          <SectionHeading id="reading" title={t.sections.reading} href={localePath(lang, '/books/')} linkLabel={t.readingJournal} />
-          <ul class="latest">
-            {latestBooks.map((book) => (
-              <li>
-                <BookEntry book={book} compact />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )
-    }
   </div>
 </BaseLayout>
 
 <style>
   .section {
     margin-bottom: var(--space-8);
-  }
-  .latest {
-    display: grid;
-    gap: var(--space-6);
-  }
-  @media (min-width: 56rem) {
-    .latest {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--space-6);
-    }
   }
 </style>
