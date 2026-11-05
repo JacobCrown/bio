@@ -10,6 +10,7 @@ const en = {
   skipToContent: 'Skip to content',
   sampleBanner: 'Sample content — this site is currently showing placeholder data.',
   languageSwitch: 'Language',
+  darkMode: 'Dark mode',
   nav: {
     home: 'Home',
     education: 'Education',
@@ -79,6 +80,7 @@ const pl: UiStrings = {
   skipToContent: 'Przejdź do treści',
   sampleBanner: 'Przykładowa treść — ta strona pokazuje obecnie dane zastępcze.',
   languageSwitch: 'Język',
+  darkMode: 'Tryb ciemny',
   nav: {
     home: 'Start',
     education: 'Wykształcenie',

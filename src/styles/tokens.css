@@ -51,19 +51,24 @@
   --duration-fast: 150ms;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-paper: oklch(20% 0.01 60);
-    --color-surface: oklch(25% 0.012 60);
-    --color-ink: oklch(92% 0.01 85);
-    --color-ink-soft: oklch(73% 0.012 80);
-    --color-line: oklch(32% 0.012 60);
-    --color-card: oklch(27% 0.012 60);
-    --color-accent: oklch(76% 0.12 45);
-    --color-on-accent: oklch(20% 0.01 60);
-    --color-star-off: oklch(34% 0.012 60);
-    --color-header: oklch(20% 0.01 60 / 0.88);
-    --shadow-card: 0 1px 2px oklch(0% 0 0 / 0.3), 0 10px 28px -14px oklch(0% 0 0 / 0.5);
-    --shadow-lift: 0 2px 4px oklch(0% 0 0 / 0.3), 0 18px 36px -16px oklch(0% 0 0 / 0.6);
-  }
+/* Dark theme. Set by BaseLayout (data-theme on <html>), which resolves the
+   user's choice or the system preference before first paint. */
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-paper: oklch(20% 0.01 60);
+  --color-surface: oklch(25% 0.012 60);
+  --color-ink: oklch(92% 0.01 85);
+  --color-ink-soft: oklch(73% 0.012 80);
+  --color-line: oklch(32% 0.012 60);
+  --color-card: oklch(27% 0.012 60);
+  --color-accent: oklch(76% 0.12 45);
+  --color-on-accent: oklch(20% 0.01 60);
+  --color-star-off: oklch(34% 0.012 60);
+  --color-header: oklch(20% 0.01 60 / 0.88);
+  --shadow-card: 0 1px 2px oklch(0% 0 0 / 0.3), 0 10px 28px -14px oklch(0% 0 0 / 0.5);
+  --shadow-lift: 0 2px 4px oklch(0% 0 0 / 0.3), 0 18px 36px -16px oklch(0% 0 0 / 0.6);
 }
