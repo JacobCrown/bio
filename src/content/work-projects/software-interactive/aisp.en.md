@@ -1,21 +1,20 @@
 ---
 employer: software-interactive
-name: System AI do klasyfikacji przyczyn ubytków paliwa na stacjach
-role: Machine Learning Engineer
+name: AITracker
+role: Computer Vision Engineer/Software Developer
 summary: >-
-  System wspierający analityków w ustalaniu przyczyn ubytków paliwa na stacjach
-  na podstawie dziennych danych ze zbiorników. Łączy modele uczenia maszynowego
-  z usługą API i zapisem informacji zwrotnej od analityków.
-startDate: 2025-09
-endDate: 2026-08
+  A system analyzing recordings from cameras placed along roads: it detects, tracks and classifies road users. It can detect over a dozen vehicle categories (passenger cars, cyclists, trucks, etc.). The system counts vehicle passages for statistical purposes.
+startDate: 2024-12
+endDate: 2025-03
 responsibilities:
-  - Rozwijanie potoku przetwarzania danych i inferencji dla szeregów czasowych.
-  - Trenowanie i ewaluacja modeli klasyfikacyjnych oraz wykrywających anomalie.
-  - Tworzenie usługi REST udostępniającej wyniki analitykom.
-  - Przygotowanie konteneryzacji, testów i dokumentacji do uruchamiania systemu.
-stack: [Python, FastAPI, MongoDB, CatBoost, scikit-learn, pandas, Docker, Streamlit]
+  - Application development
+  - Conducting computer vision research
+  - Implementing innovative solutions for video analysis and detection models
+  - Improving license plate detection and automatic reading
+stack: [Python, PyQT, pytest, PyTorch, OpenCV]
+links:
+  - label: AISP
+    url: https://pl.aisp.pl/
 ---
 
-## Cele i architektura
-
-Celem projektu jest przyspieszenie i usystematyzowanie pracy analityków przy wyjaśnianiu ubytków paliwa. System składa się z usługi REST, potoku uczenia maszynowego uruchamianego w ramach tej usługi oraz bazy danych przechowującej wyniki i decyzje analityków. Całość jest uruchamiana w kontenerach, a do wizualnej inspekcji wyników służy osobna aplikacja GUI. Decyzje są zbierane w bazie danych w celu późniejszego udoskonalania modelu sztucznej inteligencji
+The goal is to turn recordings of vehicle traffic into statistical results. A recording goes through detection, tracking and classification, and counts and relations are built from the trajectories. Each passage is saved so that it can be reviewed and corrected. The results go into spreadsheets and a final report, which is shared with the client.

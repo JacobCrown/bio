@@ -1,9 +1,9 @@
 name: Zebra Technologies
 website: https://www.zebra.com/pl/pl.html
 logo: ../../assets/logos/zebra.jpeg
-location: Gliwice, Polska
+location: Gliwice, Poland
 position: Computer Vision Engineer/Software Developer
 startDate: 2022-09
-# endDate omitted → shown as "present"
+endDate: 2024-02
 description: >-
-  Software House nastawiony na tworzenie dedykowanego oprogramowania, specjalizujący się w rozwiązaniach AI/ML, w szczególności w dziedzinie wizji komputerowej.
+  Zebra Technologies is a publicly traded technology company specializing in industrial and business process automation, Computer Vision systems, AI/ML, and intelligent solutions for data identification and analysis.

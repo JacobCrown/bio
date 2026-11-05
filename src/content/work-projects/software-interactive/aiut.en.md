@@ -1,21 +1,16 @@
 ---
 employer: software-interactive
-name: System AI do klasyfikacji przyczyn ubytków paliwa na stacjach
-role: Machine Learning Engineer
+name: AI System for Monitoring Workstations in Production Halls
+role: Computer Vision Engineer
 summary: >-
-  System wspierający analityków w ustalaniu przyczyn ubytków paliwa na stacjach
-  na podstawie dziennych danych ze zbiorników. Łączy modele uczenia maszynowego
-  z usługą API i zapisem informacji zwrotnej od analityków.
-startDate: 2025-09
-endDate: 2026-08
+  A system monitoring the occupancy of workstations in production halls. Companies using this system include, among others, manufacturers of equipment for the Polish Armed Forces.
+
+startDate: 2024-09
+endDate: 2025-12
 responsibilities:
-  - Rozwijanie potoku przetwarzania danych i inferencji dla szeregów czasowych.
-  - Trenowanie i ewaluacja modeli klasyfikacyjnych oraz wykrywających anomalie.
-  - Tworzenie usługi REST udostępniającej wyniki analitykom.
-  - Przygotowanie konteneryzacji, testów i dokumentacji do uruchamiania systemu.
-stack: [Python, FastAPI, MongoDB, CatBoost, scikit-learn, pandas, Docker, Streamlit]
+  - Training and testing detection models
+  - Application development
+stack: [Python, YOLO, PyTorch, OpenCV]
 ---
 
-## Cele i architektura
-
-Celem projektu jest przyspieszenie i usystematyzowanie pracy analityków przy wyjaśnianiu ubytków paliwa. System składa się z usługi REST, potoku uczenia maszynowego uruchamianego w ramach tej usługi oraz bazy danych przechowującej wyniki i decyzje analityków. Całość jest uruchamiana w kontenerach, a do wizualnej inspekcji wyników służy osobna aplikacja GUI. Decyzje są zbierane w bazie danych w celu późniejszego udoskonalania modelu sztucznej inteligencji
+The goal of the project is detecting workstation occupancy by pallets. Detection is performed by a backend application integrated with an industrial camera. The results go to an application that shows which workstations are occupied.

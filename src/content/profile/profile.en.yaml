@@ -1,9 +1,3 @@
-# ──────────────────────────────────────────────────────────────────────────
-# PROFILE — the only place your personal details live.
-# Everything below is DUMMY DATA. Replace it, then delete the `dummy` line.
-# Field reference: README.md → "Profile".
-# ──────────────────────────────────────────────────────────────────────────
-
 firstName: Jakub
 lastName: Korona
 title: Computer Vision Engineer/Software Developer
@@ -12,18 +6,11 @@ location:
   country: Poland
 
 bio: >-
-  I'm a computer vision engineer focused on Python, backend systems, computer vision
-  and machine learning. I enjoy turning research and ideas into reliable
-  production systems.
+  I am a software developer specializing in computer vision and artificial intelligence. I enjoy training vision models on real-world data and deploying them to production.
 
-# Image file in src/assets/profile/, referenced relative to THIS file.
 photo: ../../assets/profile/profile.png
-photoAlt: Zdjęcie profilowe
+photoAlt: Profile photo
 
 links:
   github: https://github.com/JacobCrown
-  email: jkbkorona@gmail.com 
-
-# Optional. Put the file in /public and reference it from the site root.
-# Leave this line out (or commented) to hide the CV link.
-# cv: /cv.pdf
+  email: jkbkorona@gmail.com

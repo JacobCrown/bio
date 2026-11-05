@@ -1,21 +1,19 @@
 ---
 employer: software-interactive
-name: System AI do klasyfikacji przyczyn ubytków paliwa na stacjach
+name: AI System for Classifying Causes of Fuel Losses at Gas Stations
 role: Machine Learning Engineer
 summary: >-
-  System wspierający analityków w ustalaniu przyczyn ubytków paliwa na stacjach
-  na podstawie dziennych danych ze zbiorników. Łączy modele uczenia maszynowego
-  z usługą API i zapisem informacji zwrotnej od analityków.
+  A system supporting analysts in determining the causes of fuel losses at gas stations, based on daily tank data. It combines machine learning models with an API service and records feedback from analysts.
 startDate: 2025-09
-endDate: 2026-08
+endDate: 2026-10
 responsibilities:
-  - Rozwijanie potoku przetwarzania danych i inferencji dla szeregów czasowych.
-  - Trenowanie i ewaluacja modeli klasyfikacyjnych oraz wykrywających anomalie.
-  - Tworzenie usługi REST udostępniającej wyniki analitykom.
-  - Przygotowanie konteneryzacji, testów i dokumentacji do uruchamiania systemu.
-stack: [Python, FastAPI, MongoDB, CatBoost, scikit-learn, pandas, Docker, Streamlit]
+  - Developing data processing and inference pipelines for time series.
+  - Training and evaluating classification and anomaly detection models.
+  - Building a REST service that provides results to analysts.
+  - Preparing containerization, tests and documentation for running the system.
+  - Developing an application for visualizing results.
+  - Building a tool for automatic retraining of the AI model.
+stack: [Python, FastAPI, MongoDB, CatBoost, scikit-learn, pandas, Docker, Streamlit, pytest]
 ---
 
-## Cele i architektura
-
-Celem projektu jest przyspieszenie i usystematyzowanie pracy analityków przy wyjaśnianiu ubytków paliwa. System składa się z usługi REST, potoku uczenia maszynowego uruchamianego w ramach tej usługi oraz bazy danych przechowującej wyniki i decyzje analityków. Całość jest uruchamiana w kontenerach, a do wizualnej inspekcji wyników służy osobna aplikacja GUI. Decyzje są zbierane w bazie danych w celu późniejszego udoskonalania modelu sztucznej inteligencji
+The goal of the project is to speed up and systematize analysts' work on explaining fuel losses. The system consists of a REST service, a machine learning pipeline run within that service, and a database storing the results and analysts' decisions. Everything runs in containers, and a separate GUI application is used for visual inspection of results. Decisions are collected in the database to later improve the AI model.
