@@ -46,7 +46,7 @@ src/
 │   ├── profile/  experience/  projects/  books/  shared/
 ├── i18n/                     ← language helpers (index.ts) and interface strings (ui.ts)
 ├── layouts/BaseLayout.astro  ← <head>/SEO, language switcher, header, footer
-├── pages/[lang]/             ← routes per language: home, /projects, /projects/<slug>, /books, /books/<slug>
+├── pages/[lang]/             ← routes per language: home (one page), /projects/<slug>, /books, /books/<slug>
 ├── pages/404.astro           ← shared 404 page (default language)
 └── styles/                   ← tokens.css (colours, fonts, spacing), base.css, prose.css
 ```
@@ -75,7 +75,7 @@ src/content/books/small-systems.pl.md   ← Polish version
 src/content/books/small-systems.en.md   ← English version
 ```
 
-- **Both files are required.** If an entry has only one language, `dev` and `build` stop and name the missing file.
+- **Both files are required** for the profile, education, employers, work projects and books. If one of those entries has only one language, `dev` and `build` stop and name the missing file. A personal project may exist in a single language; it is then shown only on that language's pages.
 - The URL slug is the file name without the suffix, so `/pl/books/small-systems/` and `/en/books/small-systems/` show the same entry and the language switcher always opens the matching page.
 - Keep the non-text fields (dates, ratings, links, images, `stack`, `status`, `employer`) identical in both files. The `dummy` flag goes in both files too.
 - Interface strings (headings, "Read more", date wording, plural forms) live in [`src/i18n/ui.ts`](src/i18n/ui.ts). Add a key to both languages there; TypeScript reports a missing one.
@@ -94,7 +94,7 @@ src/content/books/small-systems.en.md   ← English version
 | `bio` | yes | Short, Markdown allowed |
 | `photo` | yes | Image path, see [Images](#images) |
 | `photoAlt` | no | Alt text; defaults to "Portrait of <name>" |
-| `links.github`, `links.linkedin` | yes | Full URLs |
+| `links.github` | yes | Full URL |
 | `links.email` | yes | Plain address, e.g. `me@example.com` |
 | `cv` | no | Path to a file in `/public`, e.g. `/cv.pdf`. Omit to hide the link |
 | `dummy` | no | Delete this line when real |
@@ -178,7 +178,7 @@ Projects are sorted newest first by `startDate`; projects without dates go last.
 
 ## Add a personal project
 
-Create `src/content/projects/<slug>.pl.md` and `<slug>.en.md`. The slug becomes the URL: `/pl/projects/<slug>/` and `/en/projects/<slug>/`.
+Create `src/content/projects/<slug>.pl.md` and, when you have a translation, `<slug>.en.md`. Every personal project is listed on the home page. The slug becomes the detail URL: `/pl/projects/<slug>/` and `/en/projects/<slug>/`. A project with only one file is omitted from the other language; the language switch on its page goes to that language's home page, at the projects section. `/projects/` itself redirects there.
 
 ```markdown
 ---
@@ -192,7 +192,7 @@ stack: [Python, SQLite, FastAPI]                          # required
 startDate: 2025-09                                        # optional
 endDate: 2026-02                                          # optional
 status: ongoing                                           # completed | ongoing | archived
-featured: true                                            # optional – also show on the home page
+featured: true                                            # optional; the home page lists every project anyway
 ---
 
 Optional detailed description in Markdown. If this is empty, the card has no

@@ -7,7 +7,7 @@ import serifFont from '@fontsource-variable/newsreader/files/newsreader-latin-wg
 import monoFont from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
 import { getImage } from 'astro:assets';
 import { getProfile } from '../lib/content';
-import { locales, localeOf, localePath, ogLocales, defaultLocale } from '../i18n';
+import { locales, localeOf, localePath, ogLocales, defaultLocale, type Locale } from '../i18n';
 import { ui } from '../i18n/ui';
 
 interface Props {
@@ -18,12 +18,17 @@ interface Props {
   type?: 'website' | 'article';
   /** Structured data (JSON-LD) to embed. */
   jsonLd?: Record<string, unknown>;
+  /** Locales that have this exact page. Omit when every language has it. */
+  availableLocales?: readonly Locale[];
+  /** Path without a language prefix, used when this page has no translation. */
+  missingLocalePath?: string;
 }
 
 const lang = localeOf(Astro);
 const t = ui[lang];
 const profile = await getProfile(lang);
-const { title, description, image, type = 'website', jsonLd } = Astro.props;
+const { title, description, image, type = 'website', jsonLd, availableLocales, missingLocalePath = '/' } = Astro.props;
+const pageLocales = availableLocales ?? locales;
 
 const fullName = `${profile.firstName} ${profile.lastName}`;
 const pageTitle = title ? `${title} — ${fullName}` : `${fullName} — ${profile.title}`;
@@ -37,7 +42,7 @@ const nav = [
   { label: t.nav.home, href: '/' },
   { label: t.nav.education, href: '/#education' },
   { label: t.nav.experience, href: '/#experience' },
-  { label: t.nav.projects, href: '/projects/' },
+  { label: t.nav.projects, href: '/#projects' },
 ];
 // Path without the language prefix ("/pl/books/x/" -> "/books/x/"), used to match the nav
 // and to build the same page in the other language. Pages outside /pl/ and /en/ (404) keep their path.
@@ -46,16 +51,17 @@ const isLocalized = localePrefix.test(Astro.url.pathname);
 const path = Astro.url.pathname.replace(localePrefix, '') || '/';
 const isCurrent = (href: string) => (href === '/' ? path === '/' : !href.includes('#') && path.startsWith(href));
 
+const fallbackLocale = pageLocales.includes(defaultLocale) ? defaultLocale : pageLocales[0];
 const alternates =
-  Astro.site && isLocalized
+  Astro.site && isLocalized && fallbackLocale
     ? [
-        ...locales.map((locale) => ({ hreflang: locale, href: new URL(localePath(locale, path), Astro.site).href })),
-        { hreflang: 'x-default', href: new URL(localePath(defaultLocale, path), Astro.site).href },
+        ...pageLocales.map((locale) => ({ hreflang: locale, href: new URL(localePath(locale, path), Astro.site).href })),
+        { hreflang: 'x-default', href: new URL(localePath(fallbackLocale, path), Astro.site).href },
       ]
     : [];
 const languageSwitch = locales.map((locale) => ({
   locale,
-  href: localePath(locale, isLocalized ? path : '/'),
+  href: localePath(locale, !isLocalized || pageLocales.includes(locale) ? (isLocalized ? path : '/') : missingLocalePath),
 }));
 ---
 
@@ -136,7 +142,6 @@ const languageSwitch = locales.map((locale) => ({
         <p class="mono">© {new Date().getFullYear()} {fullName}</p>
         <ul class="mono">
           <li><a href={profile.links.github} rel="noopener">{t.contact.github}</a></li>
-          <li><a href={profile.links.linkedin} rel="noopener">{t.contact.linkedin}</a></li>
           <li><a href={`mailto:${profile.links.email}`}>{t.contact.email}</a></li>
         </ul>
       </div>

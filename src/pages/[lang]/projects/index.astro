@@ -1,22 +1,21 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import PageHeader from '../../../components/shared/PageHeader.astro';
-import ProjectGrid from '../../../components/projects/ProjectGrid.astro';
-import { getPersonalProjects } from '../../../lib/content';
-import { locales, localeOf } from '../../../i18n';
-import { ui } from '../../../i18n/ui';
+import { locales } from '../../../i18n';
 
 export const getStaticPaths = (() => locales.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
 
-const lang = localeOf(Astro);
-const t = ui[lang];
-const projects = await getPersonalProjects(lang);
+const target = `/${Astro.params.lang}/#projects`;
 ---
 
-<BaseLayout title={t.sections.projects} description={t.projectsPage.description}>
-  <div class="container">
-    <PageHeader title={t.sections.projects} intro={t.projectsPage.intro} />
-    <ProjectGrid projects={projects} />
-  </div>
-</BaseLayout>
+<!doctype html>
+<html lang={Astro.params.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={`/${Astro.params.lang}/`} />
+    <title>Redirect</title>
+  </head>
+  <body>
+    <p><a href={target}>{target}</a></p>
+  </body>
+</html>

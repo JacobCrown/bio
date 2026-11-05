@@ -8,7 +8,7 @@ import ProjectGrid from '../../components/projects/ProjectGrid.astro';
 import SectionHeading from '../../components/shared/SectionHeading.astro';
 import SkillsSection from '../../components/skills/SkillsSection.astro';
 import { collectSkills, getEducation, getEmployers, getPersonalProjects, getProfile } from '../../lib/content';
-import { locales, localeOf, localePath } from '../../i18n';
+import { locales, localeOf } from '../../i18n';
 import { ui } from '../../i18n/ui';
 
 export const getStaticPaths = (() => locales.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
@@ -21,7 +21,6 @@ const [profile, education, employers, projects] = await Promise.all([
   getEmployers(lang),
   getPersonalProjects(lang),
 ]);
-const featured = projects.filter((project) => project.featured);
 const skills = collectSkills([
   ...employers.flatMap((employer) => employer.projects.map((project) => project.stack)),
   ...projects.map((project) => project.stack),
@@ -34,7 +33,7 @@ const jsonLd = {
   name: fullName,
   jobTitle: profile.title,
   address: { '@type': 'PostalAddress', addressLocality: profile.location.city, addressCountry: profile.location.country },
-  sameAs: [profile.links.github, profile.links.linkedin],
+  sameAs: [profile.links.github],
   email: `mailto:${profile.links.email}`,
 };
 ---
@@ -50,10 +49,10 @@ const jsonLd = {
     <ExperienceTimeline employers={employers} />
 
     {
-      featured.length > 0 && (
+      projects.length > 0 && (
         <section aria-labelledby="projects" class="section">
-          <SectionHeading id="projects" title={t.sections.projects} href={localePath(lang, '/projects/')} linkLabel={t.allProjects} />
-          <ProjectGrid projects={featured} />
+          <SectionHeading id="projects" title={t.sections.projects} />
+          <ProjectGrid projects={projects} />
         </section>
       )
     }

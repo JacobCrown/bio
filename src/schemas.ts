@@ -58,7 +58,6 @@ export const profileSchema = ({ image }: SchemaContext) =>
     photoAlt: text.optional(),
     links: z.object({
       github: z.url(),
-      linkedin: z.url(),
       email: z.email(),
     }),
     /** Path of a file in /public, e.g. "/cv.pdf". Omit to hide the CV link. */
@@ -158,7 +157,7 @@ export const personalProjectSchema = ({ image }: SchemaContext) =>
       startDate: dateField.optional(),
       endDate: dateField.optional(),
       status: z.enum(projectStatus),
-      /** Featured projects are also shown on the home page. */
+      /** Kept so existing files stay valid. The home page lists every personal project. */
       featured: z.boolean().default(false),
       dummy,
     })

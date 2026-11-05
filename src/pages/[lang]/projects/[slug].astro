@@ -10,22 +10,31 @@ import DummyBadge from '../../../components/shared/DummyBadge.astro';
 import DateRange from '../../../components/shared/DateRange.astro';
 import ProjectStatus from '../../../components/projects/ProjectStatus.astro';
 import { getPersonalProjects, type PersonalProject } from '../../../lib/content';
-import { locales, localeOf, localePath } from '../../../i18n';
+import { locales, localeOf, localePath, type Locale } from '../../../i18n';
 import { ui } from '../../../i18n/ui';
 
 export const getStaticPaths = (async () => {
-  const pages = await Promise.all(
-    locales.map(async (lang) => {
-      const projects = await getPersonalProjects(lang);
-      return projects
-        .filter((project) => project.body.trim().length > 0)
-        .map((project) => ({ params: { lang, slug: project.id }, props: { project } }));
-    }),
+  const byLocale = await Promise.all(locales.map(async (lang) => ({ lang, projects: await getPersonalProjects(lang) })));
+  const localesBySlug = new Map<string, Locale[]>();
+  for (const { lang, projects } of byLocale) {
+    for (const project of projects) {
+      if (project.body.trim().length === 0) continue;
+      const list = localesBySlug.get(project.id) ?? [];
+      list.push(lang);
+      localesBySlug.set(project.id, list);
+    }
+  }
+  return byLocale.flatMap(({ lang, projects }) =>
+    projects
+      .filter((project) => project.body.trim().length > 0)
+      .map((project) => ({
+        params: { lang, slug: project.id },
+        props: { project, availableLocales: localesBySlug.get(project.id) ?? [lang] },
+      })),
   );
-  return pages.flat();
 }) satisfies GetStaticPaths;
 
-const { project } = Astro.props as { project: PersonalProject };
+const { project, availableLocales } = Astro.props as { project: PersonalProject; availableLocales: Locale[] };
 const lang = localeOf(Astro);
 const t = ui[lang];
 const links = [
@@ -34,9 +43,15 @@ const links = [
 ];
 ---
 
-<BaseLayout title={project.name} description={project.summary} image={project.image}>
+<BaseLayout
+  title={project.name}
+  description={project.summary}
+  image={project.image}
+  availableLocales={availableLocales}
+  missingLocalePath="/#projects"
+>
   <div class="container">
-    <PageHeader title={project.name} intro={project.summary} backHref={localePath(lang, '/projects/')} backLabel={t.allProjects} />
+    <PageHeader title={project.name} intro={project.summary} backHref={localePath(lang, '/#projects')} backLabel={t.nav.projects} />
 
     <div class="meta">
       <ProjectStatus status={project.status} />

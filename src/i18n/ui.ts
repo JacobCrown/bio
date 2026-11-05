@@ -17,7 +17,7 @@ const en = {
     projects: 'Projects',
     reading: 'Reading',
   },
-  contact: { github: 'GitHub', linkedin: 'LinkedIn', email: 'Email' },
+  contact: { github: 'GitHub', email: 'Email' },
   downloadCv: 'Download CV',
   defaultDescription: (name: string, title: string, city: string, country: string) =>
     `${name}, ${title.toLowerCase()} based in ${city}, ${country}.`,
@@ -39,7 +39,6 @@ const en = {
     reading: 'Recently read',
     skills: 'Skills',
   },
-  allProjects: 'All projects',
   readingJournal: 'Reading journal',
   readMore: 'Read more',
   showLess: 'Show less',
@@ -49,10 +48,6 @@ const en = {
   details: 'Details',
   liveDemo: 'Live demo',
   status: { completed: 'Completed', ongoing: 'Ongoing', archived: 'Archived' },
-  projectsPage: {
-    description: 'Personal and open-source projects.',
-    intro: 'Personal and open-source projects, newest first.',
-  },
   bookCount: (n: number) => `${n} ${plural('en', n, { one: 'book', other: 'books' })}`,
   booksPage: {
     description: 'Books I have read, with ratings, summaries and personal reviews.',
@@ -91,7 +86,7 @@ const pl: UiStrings = {
     projects: 'Projekty',
     reading: 'Książki',
   },
-  contact: { github: 'GitHub', linkedin: 'LinkedIn', email: 'E-mail' },
+  contact: { github: 'GitHub', email: 'E-mail' },
   downloadCv: 'Pobierz CV',
   defaultDescription: (name, title, city, country) => `${name} — ${title.toLowerCase()}, ${city}, ${country}.`,
   present: 'obecnie',
@@ -112,7 +107,6 @@ const pl: UiStrings = {
     reading: 'Ostatnio przeczytane',
     skills: 'Umiejętności',
   },
-  allProjects: 'Wszystkie projekty',
   readingJournal: 'Dziennik czytelniczy',
   readMore: 'Czytaj więcej',
   showLess: 'Pokaż mniej',
@@ -122,10 +116,6 @@ const pl: UiStrings = {
   details: 'Szczegóły',
   liveDemo: 'Wersja demo',
   status: { completed: 'Zakończony', ongoing: 'W toku', archived: 'Zarchiwizowany' },
-  projectsPage: {
-    description: 'Projekty osobiste i open source.',
-    intro: 'Projekty osobiste i open source, od najnowszych.',
-  },
   bookCount: (n) => `${n} ${plural('pl', n, { one: 'książka', few: 'książki', many: 'książek', other: 'książek' })}`,
   booksPage: {
     description: 'Książki, które przeczytałem, z ocenami, streszczeniami i recenzjami.',

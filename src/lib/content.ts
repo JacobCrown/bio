@@ -29,9 +29,15 @@ const time = (date?: Date | null) => date?.getTime() ?? Number.NEGATIVE_INFINITY
 
 /**
  * Keeps the entries of one language and strips the suffix from their ids.
- * Fails the build if a slug exists in only some languages.
+ * Fails the build if a slug exists in only some languages, unless `allowMissing`
+ * is set (personal projects may ship in one language).
  */
-function inLocale<E extends { id: string }>(name: string, entries: E[], locale: Locale): (E & { id: string })[] {
+function inLocale<E extends { id: string }>(
+  name: string,
+  entries: E[],
+  locale: Locale,
+  { allowMissing = false }: { allowMissing?: boolean } = {},
+): (E & { id: string })[] {
   const languagesBySlug = new Map<string, Set<Locale>>();
   const parsed = entries.map((entry) => {
     const { slug, locale: entryLocale } = splitId(entry.id);
@@ -41,12 +47,14 @@ function inLocale<E extends { id: string }>(name: string, entries: E[], locale: 
     return { entry, slug, entryLocale };
   });
 
-  for (const [slug, languages] of languagesBySlug) {
-    const missing = locales.filter((l) => !languages.has(l));
-    if (missing.length > 0) {
-      throw new Error(
-        `${name}/${slug}: missing translation for ${missing.map((l) => `.${l}`).join(', ')} (add the file with the same name).`,
-      );
+  if (!allowMissing) {
+    for (const [slug, languages] of languagesBySlug) {
+      const missing = locales.filter((l) => !languages.has(l));
+      if (missing.length > 0) {
+        throw new Error(
+          `${name}/${slug}: missing translation for ${missing.map((l) => `.${l}`).join(', ')} (add the file with the same name).`,
+        );
+      }
     }
   }
 
@@ -99,7 +107,7 @@ export async function getEmployers(locale: Locale): Promise<Employer[]> {
 }
 
 export async function getPersonalProjects(locale: Locale): Promise<PersonalProject[]> {
-  const entries = inLocale('projects', await getCollection('projects'), locale);
+  const entries = inLocale('projects', await getCollection('projects'), locale, { allowMissing: true });
   return entries
     .map(({ id, body, data }) => ({ ...data, id, body: body ?? '' }))
     .sort((a, b) => time(b.startDate) - time(a.startDate) || a.name.localeCompare(b.name));

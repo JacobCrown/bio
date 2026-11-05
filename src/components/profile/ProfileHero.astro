@@ -14,7 +14,6 @@ const t = ui[localeOf(Astro)];
 const fullName = `${profile.firstName} ${profile.lastName}`;
 const links = [
   { label: t.contact.github, href: profile.links.github, external: true },
-  { label: t.contact.linkedin, href: profile.links.linkedin, external: true },
   { label: t.contact.email, href: `mailto:${profile.links.email}`, external: false },
   ...(profile.cv ? [{ label: t.downloadCv, href: profile.cv, external: false, download: true }] : []),
 ];
